@@ -45,7 +45,7 @@
     <Compile Include="User\User.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Ye.Repository\LacesRepo.csproj">
+    <ProjectReference Include="..\LacesRepo\LacesRepo.csproj">
       <Project>{bfa11cfd-5d31-4ab8-b88d-9b4df1624ac6}</Project>
       <Name>LacesRepo</Name>
     </ProjectReference>
