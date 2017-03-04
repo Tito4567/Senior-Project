@@ -8,9 +8,9 @@ namespace LacesRepo.Mappers
     {
         public T MapFromEntity(Entity source)
         {
-            T result = default(T);
+            T result = (T)Activator.CreateInstance(typeof(T));
 
-            foreach (PropertyInfo propertyInfo in result.GetType().GetProperties())
+            foreach (PropertyInfo propertyInfo in typeof(T).GetProperties())
             {
                 if (propertyInfo.CanWrite)
                 {

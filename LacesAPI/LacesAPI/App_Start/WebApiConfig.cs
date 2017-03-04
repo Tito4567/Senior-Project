@@ -9,11 +9,7 @@ namespace LacesAPI
     {
         public static void Register(HttpConfiguration config)
         {
-           config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+           config.Routes.MapHttpRoute(name: "UserApi", routeTemplate: "{controller}/{action}/{id}", defaults: new { id = RouteParameter.Optional });
         }
     }
 }

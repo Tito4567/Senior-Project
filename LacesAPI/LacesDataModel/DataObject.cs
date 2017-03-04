@@ -6,6 +6,15 @@ namespace LacesDataModel
 {
     public abstract class DataObject
     {
+        public DataObject() {  }
+
+        public DataObject(int id)
+        {
+            Load(id);
+        }
+
+        public virtual void Load(int id) { }
+
         public virtual bool Add()
         {
             Entity entity = new EntityMapper().MapToEntity(this);

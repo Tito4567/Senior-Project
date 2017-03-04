@@ -19,6 +19,30 @@ namespace LacesDataModel.User
         public string Email { get; set; }
         public DateTime CreatedDate { get; set; }
 
+        public User() { }
+
+        public User(int id) : base(id) {  }
+
+        public override void Load(int id)
+        {
+            User temp = GetByValue("userId", Convert.ToString(id));
+
+            if (temp != null)
+            {
+                UserId = temp.UserId;
+                UserName = temp.UserName;
+                Password = temp.Password;
+                DisplayName = temp.DisplayName;
+                Description = temp.Description;
+                Email = temp.Email;
+                CreatedDate = temp.CreatedDate;
+            }
+            else
+            {
+                throw new Exception("Could not find user with that Id");
+            }
+        }
+
         // User must use a stored procedure so that the SQL server can handle password encryption.
         public override bool Add()
         {
@@ -59,17 +83,31 @@ namespace LacesDataModel.User
         {
             bool result = false;
 
+            User response = GetByValue(column, value.Trim());
+
+            if (response != null)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+
+        // This may need revisiting in the future. Currently it does a SELECT * rather than naming specific columns,
+        // which is not best practice.
+        private User GetByValue(string column, string value)
+        {
+            User result = null;
+
             SearchEntity search = new SearchEntity();
 
-            search.ColumnsToReturn = new List<string>();
-            search.ColumnsToReturn.Add(column);
-
+            search.ConnectionString = Constants.CONNECTION_STRING;
             search.Conditions = new List<Condition>();
 
             Condition searchCond = new Condition();
             searchCond.Column = column;
             searchCond.Operator = Condition.Operators.EqualTo;
-            searchCond.Value = value.Trim();
+            searchCond.Value = value;
 
             search.Conditions.Add(searchCond);
 
@@ -81,7 +119,7 @@ namespace LacesDataModel.User
 
             if (response.Count > 0)
             {
-                result = true;
+                result = response[0];
             }
 
             return result;
