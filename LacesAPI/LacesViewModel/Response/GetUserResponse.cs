@@ -14,6 +14,9 @@ namespace LacesViewModel.Response
         public string DisplayName { get; set; }
         public string Description { get; set; }
         public string Email { get; set; }
+        public int ProductCount { get; set; }
+        public int FollowedUsers { get; set; }
+        public int FollowingUsers { get; set; }
         public DateTime CreatedDate { get; set; }
     }
 }

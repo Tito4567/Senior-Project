@@ -57,7 +57,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SQL Scripts\DatabaseSetup.sql" />
+    <Content Include="SQL Scripts\Table Creation\Conditions.sql" />
+    <Content Include="SQL Scripts\Table Creation\Product.sql" />
+    <Content Include="SQL Scripts\Table Creation\ProductStatus.sql" />
+    <Content Include="SQL Scripts\Table Creation\ProductTypes.sql" />
     <Content Include="SQL Scripts\Table Creation\User.sql" />
+    <Content Include="SQL Scripts\Table Creation\UserFollows.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

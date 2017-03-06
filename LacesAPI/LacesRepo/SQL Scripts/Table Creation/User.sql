@@ -2,10 +2,13 @@
 	  [UserId]			[int]			IDENTITY(1,1)	NOT FOR REPLICATION	NOT NULL
 	, [UserName]		[varchar](15)	UNIQUE			NOT NULL
 	, [Password]		[varchar](300)	NOT NULL
-	, [DisplayName]	[varchar](40)		NOT NULL
-	, Description		[varchar](max)
-	, Email				[varchar](40)	UNIQUE			NOT NULL
-	, CreatedDate		[datetime]		NOT NULL
+	, [DisplayName]		[varchar](40)	NOT NULL
+	, [Description]		[varchar](max)
+	, [Email]			[varchar](40)	UNIQUE			NOT NULL
+	, [ProductCount]	[int]			NOT NULL
+	, [UsersFollowed]	[int]			NOT NULL
+	, [UsersFollowing]	[int]			NOT NULL
+	, [CreatedDate]		[datetime]		NOT NULL
   CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED
 (
 	[UserId] ASC
@@ -30,9 +33,12 @@ BEGIN
 		[UserName]	
 		, [Password]
 		, [DisplayName]
-		, Description
-		, Email
-		, CreatedDate
+		, [Description]
+		, [Email]
+		, [ProductCount]
+		, [UsersFollowed]
+		, [UsersFollowing]
+		, [CreatedDate]
 	)
 	VALUES
 	(
@@ -41,6 +47,9 @@ BEGIN
 		, @displayName
 		, @description
 		, @email
+		, 0
+		, 0
+		, 0
 		, @createdDate
 	)
 	

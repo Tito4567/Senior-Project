@@ -122,7 +122,12 @@ namespace LacesAPI.Controllers
                     response.User.DisplayName = user.DisplayName;
                     response.User.Email = user.Email;
                     response.User.UserName = user.UserName;
+                    response.User.ProductCount = user.ProductCount;
+                    response.User.FollowedUsers = user.FollowedUsers;
+                    response.User.FollowingUsers = user.FollowingUsers;
                     response.User.UserId = user.UserId;
+
+                    response.Success = true;
                 }
                 else
                 {

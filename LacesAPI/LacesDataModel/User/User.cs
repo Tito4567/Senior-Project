@@ -1,7 +1,6 @@
 ﻿using LacesRepo;
 using LacesRepo.Attributes;
 using System;
-using System.Collections.Generic;
 
 namespace LacesDataModel.User
 {
@@ -17,6 +16,9 @@ namespace LacesDataModel.User
         public string DisplayName { get; set; }
         public string Description { get; set; }
         public string Email { get; set; }
+        public int ProductCount { get; set; }
+        public int FollowedUsers { get; set; }
+        public int FollowingUsers { get; set; }
         public DateTime CreatedDate { get; set; }
 
         public User() { }
@@ -25,7 +27,7 @@ namespace LacesDataModel.User
 
         public override void Load(int id)
         {
-            User temp = GetByValue("userId", Convert.ToString(id));
+            User temp = GetByValue<User>("UserId", Convert.ToString(id), Constants.TABLE_USERS, Constants.SCHEMA_DEFAULT);
 
             if (temp != null)
             {
@@ -35,6 +37,9 @@ namespace LacesDataModel.User
                 DisplayName = temp.DisplayName;
                 Description = temp.Description;
                 Email = temp.Email;
+                ProductCount = temp.ProductCount;
+                FollowedUsers = temp.FollowedUsers;
+                FollowingUsers = temp.FollowingUsers;
                 CreatedDate = temp.CreatedDate;
             }
             else
@@ -83,43 +88,11 @@ namespace LacesDataModel.User
         {
             bool result = false;
 
-            User response = GetByValue(column, value.Trim());
+            User response = GetByValue<User>(column, value.Trim(), Constants.TABLE_USERS, Constants.SCHEMA_DEFAULT);
 
             if (response != null)
             {
                 result = true;
-            }
-
-            return result;
-        }
-
-        // This may need revisiting in the future. Currently it does a SELECT * rather than naming specific columns,
-        // which is not best practice.
-        private User GetByValue(string column, string value)
-        {
-            User result = null;
-
-            SearchEntity search = new SearchEntity();
-
-            search.ConnectionString = Constants.CONNECTION_STRING;
-            search.Conditions = new List<Condition>();
-
-            Condition searchCond = new Condition();
-            searchCond.Column = column;
-            searchCond.Operator = Condition.Operators.EqualTo;
-            searchCond.Value = value;
-
-            search.Conditions.Add(searchCond);
-
-            search.PageSizeLimit = 1;
-            search.SchemaName = Constants.SCHEMA_DEFAULT;
-            search.TableName = Constants.TABLE_USERS;
-
-            List<User> response = new GenericRepository<User>().Read(search);
-
-            if (response.Count > 0)
-            {
-                result = response[0];
             }
 
             return result;

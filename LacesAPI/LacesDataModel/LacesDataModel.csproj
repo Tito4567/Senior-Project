@@ -41,8 +41,13 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="DataObject.cs" />
+    <Compile Include="Product\Condition.cs" />
+    <Compile Include="Product\Product.cs" />
+    <Compile Include="Product\ProductStatus.cs" />
+    <Compile Include="Product\ProductType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User\User.cs" />
+    <Compile Include="User\UserFollow.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LacesRepo\LacesRepo.csproj">
