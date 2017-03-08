@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace LacesViewModel.Response
 {
@@ -18,5 +19,15 @@ namespace LacesViewModel.Response
         public int FollowedUsers { get; set; }
         public int FollowingUsers { get; set; }
         public DateTime CreatedDate { get; set; }
+        public ProfilePicture ProfilePicture { get; set; }
+		public List<int> Products { get; set; }
+    }
+
+    public class ProfilePicture
+    {
+        public string fileName { get; set; }
+        public string fileFormat { get; set; }
+        public byte[] fileData { get; set; }
+        public DateTime DateLastChanged { get; set; }
     }
 }

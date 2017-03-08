@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Products] (
 	  [ProductId]		[int]			IDENTITY(1,1)	NOT FOR REPLICATION	NOT NULL
-	, [Name]			[varchar](40)	UNIQUE			NOT NULL
+	, [Name]			[varchar](40)	NOT NULL
 	, [Description]		[varchar](max)	NOT NULL
 	, [SellerId]		[int]			NOT NULL
 	, [AskingPrice]		[decimal](9,2)

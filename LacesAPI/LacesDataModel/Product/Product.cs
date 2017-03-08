@@ -1,5 +1,7 @@
-﻿using LacesRepo.Attributes;
+﻿using LacesRepo;
+using LacesRepo.Attributes;
 using System;
+using System.Collections.Generic;
 
 namespace LacesDataModel.Product
 {
@@ -47,8 +49,36 @@ namespace LacesDataModel.Product
             }
             else
             {
-                throw new Exception("Could not find product with that Id");
+                throw new Exception("Could not find product with Id " + id);
             }
         }
+		
+		// This might be best moved into a different class later on.
+		public static List<Product> GetProductsForUser(int userId)
+		{
+			List<Product> result = new List<Product>();
+
+            SearchEntity search = new SearchEntity();
+
+			search.ColumnsToReturn = new List<string>();
+			search.ColumnsToReturn.Add("ProductId");
+			
+            search.ConnectionString = Constants.CONNECTION_STRING;
+            search.Conditions = new List<LacesRepo.Condition>();
+
+            LacesRepo.Condition userIdCond = new LacesRepo.Condition();
+            userIdCond.Column = "SellerId";
+            userIdCond.Operator = LacesRepo.Condition.Operators.EqualTo;
+            userIdCond.Value = Convert.ToString(userId);
+
+            search.Conditions.Add(userIdCond);
+
+            search.SchemaName = Constants.SCHEMA_DEFAULT;
+            search.TableName = Constants.TABLE_IMAGES;
+
+            result = new GenericRepository<Product>().Read(search);
+
+            return result;
+		}
     }
 }

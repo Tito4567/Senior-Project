@@ -27,7 +27,7 @@ namespace LacesDataModel.Product
             }
             else
             {
-                throw new Exception("Could not find product status with that Id");
+                throw new Exception("Could not find product status with Id " + id);
             }
         }
     }

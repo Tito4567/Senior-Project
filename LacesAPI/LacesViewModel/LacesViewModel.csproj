@@ -40,12 +40,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Request\AddImageRequest.cs" />
+    <Compile Include="Request\AddProductRequest.cs" />
     <Compile Include="Request\AddUserRequest.cs" />
+    <Compile Include="Request\FollowUserRequest.cs" />
     <Compile Include="Request\GetUserRequest.cs" />
     <Compile Include="Request\LacesRequest.cs" />
+    <Compile Include="Request\LoginUserRequest.cs" />
+    <Compile Include="Request\UpdatePasswordRequest.cs" />
+    <Compile Include="Request\UpdateUserInfoRequest.cs" />
+    <Compile Include="Response\AddProductResponse.cs" />
     <Compile Include="Response\AddUserResponse.cs" />
     <Compile Include="Response\GetUserResponse.cs" />
     <Compile Include="Response\LacesResponse.cs" />
+    <Compile Include="Response\LoginUserResponse.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

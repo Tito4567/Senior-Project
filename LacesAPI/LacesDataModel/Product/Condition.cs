@@ -27,7 +27,7 @@ namespace LacesDataModel.Product
             }
             else
             {
-                throw new Exception("Could not find condition with that Id");
+                throw new Exception("Could not find condition with Id " + id);
             }
         }
     }

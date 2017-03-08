@@ -5,10 +5,10 @@
 	, [DisplayName]		[varchar](40)	NOT NULL
 	, [Description]		[varchar](max)
 	, [Email]			[varchar](40)	UNIQUE			NOT NULL
-	, [ProductCount]	[int]			NOT NULL
 	, [UsersFollowed]	[int]			NOT NULL
 	, [UsersFollowing]	[int]			NOT NULL
 	, [CreatedDate]		[datetime]		NOT NULL
+	, [UpdatedDate]		[datetime]		NOT NULL
   CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED
 (
 	[UserId] ASC
@@ -23,7 +23,6 @@ CREATE PROCEDURE [dbo].[pr_addUser]
 	, @password		VARCHAR(15)
 	, @displayName	VARCHAR(40)
 	, @description	VARCHAR(MAX)
-	, @createdDate	DATETIME
 	, @userId		INT				OUTPUT
 )
 AS
@@ -35,10 +34,10 @@ BEGIN
 		, [DisplayName]
 		, [Description]
 		, [Email]
-		, [ProductCount]
 		, [UsersFollowed]
 		, [UsersFollowing]
 		, [CreatedDate]
+		, [UpdatedDate]
 	)
 	VALUES
 	(
@@ -49,13 +48,57 @@ BEGIN
 		, @email
 		, 0
 		, 0
-		, 0
-		, @createdDate
+		, GETDATE()
+		, GETDATE()
 	)
 	
 	SET @userId = (SELECT SCOPE_IDENTITY())
 END
 GO
 
+CREATE PROCEDURE [dbo].[pr_validateLogin]
+(
+	@userName	VARCHAR(15)
+	, @password	VARCHAR(15)
+	, @userId	INT			OUTPUT
+)
+AS
+BEGIN
+	SELECT @userId=UserId FROM Users
+	WHERE
+		UserName=@userName
+		AND [Password]=HASHBYTES('SHA2_256',@password)
+END
+GO
+
+CREATE PROCEDURE [dbo].[pr_changePassword]
+(
+	@userId			INT
+	, @oldPassword	VARCHAR(15)
+	, @newPassword	VARCHAR(15)
+	, @result		BIT			OUTPUT
+)
+AS
+BEGIN
+	SELECT @userId=UserId FROM Users
+	WHERE
+		UserId=@userId
+		AND [Password]=HASHBYTES('SHA2_256',@oldPassword)
+
+	IF (@@ROWCOUNT > 0)
+	BEGIN
+		UPDATE Users
+		SET [Password] = HASHBYTES('SHA2_256',@newPassword)
+		WHERE UserId=@userId
+
+		SET @result = 1
+	END
+	ELSE
+		SET @result = 0
+END
+GO
+
 GRANT EXECUTE ON [dbo].[pr_addUser] TO LACES_USER
+GRANT EXECUTE ON [dbo].[pr_validateLogin] TO LACES_USER
+GRANT EXECUTE ON [dbo].[pr_changePassword] TO LACES_USER
 GO

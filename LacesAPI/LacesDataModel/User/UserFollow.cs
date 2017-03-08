@@ -29,7 +29,7 @@ namespace LacesDataModel.User
             }
             else
             {
-                throw new Exception("Could not find user follow record with that Id");
+                throw new Exception("Could not find user follow record with Id " + id);
             }
         }
     }

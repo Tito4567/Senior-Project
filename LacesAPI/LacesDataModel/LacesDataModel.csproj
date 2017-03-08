@@ -41,6 +41,8 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="DataObject.cs" />
+    <Compile Include="Image\Image.cs" />
+    <Compile Include="Image\ImageEntityType.cs" />
     <Compile Include="Product\Condition.cs" />
     <Compile Include="Product\Product.cs" />
     <Compile Include="Product\ProductStatus.cs" />
