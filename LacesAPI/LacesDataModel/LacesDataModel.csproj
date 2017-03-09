@@ -48,8 +48,10 @@
     <Compile Include="Product\ProductStatus.cs" />
     <Compile Include="Product\ProductType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="User\Comment.cs" />
     <Compile Include="User\User.cs" />
     <Compile Include="User\UserFollow.cs" />
+    <Compile Include="User\UserLike.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LacesRepo\LacesRepo.csproj">

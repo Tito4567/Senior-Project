@@ -19,11 +19,11 @@ namespace LacesViewModel.Response
         public int FollowedUsers { get; set; }
         public int FollowingUsers { get; set; }
         public DateTime CreatedDate { get; set; }
-        public ProfilePicture ProfilePicture { get; set; }
+        public ImageInfo ProfilePicture { get; set; }
 		public List<int> Products { get; set; }
     }
 
-    public class ProfilePicture
+    public class ImageInfo
     {
         public string fileName { get; set; }
         public string fileFormat { get; set; }

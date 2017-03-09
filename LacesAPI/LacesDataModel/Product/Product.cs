@@ -71,7 +71,14 @@ namespace LacesDataModel.Product
             userIdCond.Operator = LacesRepo.Condition.Operators.EqualTo;
             userIdCond.Value = Convert.ToString(userId);
 
+            LacesRepo.Condition statusCond = new LacesRepo.Condition();
+            statusCond.Column = "ProductStatusId";
+            statusCond.Operator = LacesRepo.Condition.Operators.EqualTo;
+            statusCond.Value = Convert.ToString((int)ProductStatusOptions.Removed);
+            statusCond.Invert = true;
+
             search.Conditions.Add(userIdCond);
+            search.Conditions.Add(statusCond);
 
             search.SchemaName = Constants.SCHEMA_DEFAULT;
             search.TableName = Constants.TABLE_IMAGES;

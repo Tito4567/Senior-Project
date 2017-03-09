@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SQL Scripts\DatabaseSetup.sql" />
+    <Content Include="SQL Scripts\Table Creation\Comments.sql" />
     <Content Include="SQL Scripts\Table Creation\Conditions.sql" />
     <Content Include="SQL Scripts\Table Creation\ImageEntityTypes.sql" />
     <Content Include="SQL Scripts\Table Creation\Images.sql" />
@@ -65,6 +66,7 @@
     <Content Include="SQL Scripts\Table Creation\ProductTypes.sql" />
     <Content Include="SQL Scripts\Table Creation\User.sql" />
     <Content Include="SQL Scripts\Table Creation\UserFollows.sql" />
+    <Content Include="SQL Scripts\Table Creation\UserLikes.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

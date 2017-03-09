@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LacesRepo.Attributes;
+using System;
 
 namespace LacesDataModel.Image
 {
@@ -9,6 +10,10 @@ namespace LacesDataModel.Image
         Product = 2
     }
 
+    [ConnectionString(Constants.CONNECTION_STRING)]
+    [TableName(Constants.TABLE_IMAGE_ENTITY_TYPES)]
+    [PrimaryKeyName("ImageEntityTypeId")]
+    [SchemaName(Constants.SCHEMA_DEFAULT)]
     public class ImageEntityType : DataObject
     {
         public int ImageEntityTypeId { get; set; }

@@ -3,6 +3,14 @@ using System;
 
 namespace LacesDataModel.Product
 {
+    public enum ProductStatusOptions
+    {
+        Unknown = 0,
+        Open = 1,
+        Sold = 2,
+        Removed = 3
+    }
+
     [ConnectionString(Constants.CONNECTION_STRING)]
     [TableName(Constants.TABLE_PRODUCT_STATUS)]
     [PrimaryKeyName("ProductStatusId")]

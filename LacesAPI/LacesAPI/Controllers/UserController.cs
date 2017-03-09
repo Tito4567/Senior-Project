@@ -30,6 +30,16 @@ namespace LacesAPI.Controllers
         /* TODO:
          *  1. Using a static string as a security token is not very secure, and is a temporary measure. A better authentication method should be implemented before a Production release.
          *  2. When an error occurs, a generic error response is returned. It would be a good idea to implement a logging service so that errors can be tracked in detail on the server side.
+         *  3. Throwing exceptions when something can't be found and setting response message based on custom exception content is lazy and could lead to problems down the line. This should
+         *      be changed as soon as we have bandwidth to focus on polish.
+         *  4. Too much logic is being implemented in controller classes. These should really only be used to validate the requests, the actual data manipulation should be done elsewhere.
+         *      The best solution would probably be to add a LacesBusiness project to the solution, and move the assignment logic there.
+         *  5. Update methods should be designed so that, if a value is not included in the request, it is not included in the update. This change will have to be made carefully, as some
+         *      values may be deliberately getting updated to a blank.
+         *  6. Request validation
+         *  7. Some of the request types should probably be consolidated, as several contain the same or similar data.
+         *  8. General refactoring
+         *  9. Add error codes to make it easier for the app to process failure responses.
          */
 
         [HttpPost]
@@ -137,7 +147,7 @@ namespace LacesAPI.Controllers
                     response.User.FollowedUsers = user.FollowedUsers;
                     response.User.FollowingUsers = user.FollowingUsers;
                     response.User.UserId = user.UserId;
-                    response.User.ProfilePicture = new ProfilePicture();
+                    response.User.ProfilePicture = new LacesViewModel.Response.ImageInfo();
 
                     Image profPic = new Image();
 
@@ -178,7 +188,6 @@ namespace LacesAPI.Controllers
             catch (Exception ex)
             {
                 response = new GetUserResponse();
-                response.User = null;
                 response.Success = false;
 
                 if (ex.Message.Contains("find user"))
@@ -208,10 +217,16 @@ namespace LacesAPI.Controllers
                     user.Description = request.Description;
                     user.DisplayName = request.DisplayName;
 
-                    user.Update();
-
-                    response.Success = true;
-                    response.Message = "User updated succesfully.";
+                    if (user.Update())
+                    {
+                        response.Success = true;
+                        response.Message = "User updated succesfully.";
+                    }
+                    else
+                    {
+                        response.Success = false;
+                        response.Message = "An error occurred when communicating with the database.";
+                    }
                 }
                 else
                 {
@@ -221,6 +236,7 @@ namespace LacesAPI.Controllers
             }
             catch (Exception ex)
             {
+                response = new LacesResponse();
                 response.Success = false;
 
                 if (ex.Message.Contains("find user"))
@@ -316,7 +332,7 @@ namespace LacesAPI.Controllers
                         response = new LoginUserResponse();
                         response.UserId = 0;
                         response.Success = false;
-                        response.Message = "An unexpected error has occurred; please verify the format of your request.";
+                        response.Message = "An error occurred when communicating with the database.";
                     }
                 }
                 else
@@ -412,11 +428,13 @@ namespace LacesAPI.Controllers
 
                     Image userAvatar = new Image();
 
+                    bool success;
+
                     if (userAvatar.LoadAvatarByUserId(user.UserId))
                     {
                         userAvatar.FileFormat = request.ImageInfo.FileFormat;
                         userAvatar.UpdatedDate = DateTime.Now;
-                        userAvatar.Update();
+                        success = userAvatar.Update();
                     }
                     else
                     {
@@ -427,11 +445,19 @@ namespace LacesAPI.Controllers
                         userAvatar.ImageEntityTypeId = (int)ImageEntityTypeOptions.User;
                         userAvatar.CreatedDate = DateTime.Now;
                         userAvatar.UpdatedDate = DateTime.Now;
-                        userAvatar.Add();
+                        success = userAvatar.Add();
                     }
 
-                    response.Success = true;
-                    response.Message = "User profile picture succesfully updated.";
+                    if (success)
+                    {
+                        response.Success = true;
+                        response.Message = "User profile picture succesfully updated.";
+                    }
+                    else
+                    {
+                        response.Success = false;
+                        response.Message = "An error occurred when communicating with the database.";
+                    }
                 }
                 else
                 {
@@ -444,6 +470,103 @@ namespace LacesAPI.Controllers
                 response.Success = false;
 
                 if (ex.Message.Contains("find user"))
+                {
+                    response.Message = ex.Message;
+                }
+                else
+                {
+                    response.Message = "An unexpected error has occurred; please verify the format of your request.";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        public LacesResponse LikeProduct(LikeProductRequest request)
+        {
+            LacesResponse response = new LacesResponse();
+
+            try
+            {
+                if (request.SecurityString == ConfigurationManager.AppSettings[Constants.APP_SETTING_SECURITY_TOKEN])
+                {
+                    // Confirm user and product exist
+                    LacesDataModel.User.User user = new LacesDataModel.User.User(request.UserId);
+                    Product product = new Product(request.ProductId);
+
+                    UserLike like = new UserLike();
+                    like.UserId = user.UserId;
+                    like.ProductId = product.ProductId;
+
+                    if (like.Add())
+                    {
+                        response.Success = true;
+                        response.Message = "Operation completed.";
+                    }
+                    else
+                    {
+                        response.Success = false;
+                        response.Message = "An error occurred when communicating with the database.";
+                    }
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Invalid security token.";
+                }
+            }
+            catch (Exception ex)
+            {
+                response = new LacesResponse();
+                response.Success = false;
+
+                if (ex.Message.Contains("find user") || ex.Message.Contains("find product") || ex.Message.Contains("find like"))
+                {
+                    response.Message = ex.Message;
+                }
+                else
+                {
+                    response.Message = "An unexpected error has occurred; please verify the format of your request.";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        public LacesResponse RemoveLike(RemoveLikeRequest request)
+        {
+            LacesResponse response = new LacesResponse();
+
+            try
+            {
+                if (request.SecurityString == ConfigurationManager.AppSettings[Constants.APP_SETTING_SECURITY_TOKEN])
+                {
+                    UserLike like = new UserLike(request.UserLikeId);
+
+                    if (like.Delete())
+                    {
+                        response.Success = true;
+                        response.Message = "Operation completed.";
+                    }
+                    else
+                    {
+                        response.Success = false;
+                        response.Message = "An error occurred when communicating with the database.";
+                    }
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Invalid security token.";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+
+                if (ex.Message.Contains("find like"))
                 {
                     response.Message = ex.Message;
                 }
