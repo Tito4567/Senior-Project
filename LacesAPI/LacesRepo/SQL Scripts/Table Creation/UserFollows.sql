@@ -1,7 +1,8 @@
 ﻿CREATE TABLE [dbo].[UserFollows] (
-	  [UserFollowId]	[int]	IDENTITY(1,1)	NOT FOR REPLICATION	NOT NULL
-	, [FollowingUserId]	[int]	NOT NULL
-	, [FollowedUserId]	[int]	NOT NULL
+	  [UserFollowId]	[int]		IDENTITY(1,1)	NOT FOR REPLICATION	NOT NULL
+	, [FollowingUserId]	[int]		NOT NULL
+	, [FollowedUserId]	[int]		NOT NULL
+	, [CreatedDate]		[datetime]	NOT NULL
   CONSTRAINT [PK_UserFollows] PRIMARY KEY CLUSTERED
 (
 	[UserFollowId] ASC

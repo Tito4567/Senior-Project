@@ -15,6 +15,8 @@ namespace LacesDataModel.User
         public int UserId { get; set; }
         public int ProductId { get; set; }
         public bool Interested { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdatedDate { get; set; }
 
         public UserInterestQueue() { }
 
@@ -30,6 +32,8 @@ namespace LacesDataModel.User
                 UserId = temp.UserId;
                 ProductId = temp.ProductId;
                 Interested = temp.Interested;
+                CreatedDate = temp.CreatedDate;
+                UpdatedDate = temp.UpdatedDate;
             }
             else
             {

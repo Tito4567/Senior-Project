@@ -14,6 +14,7 @@ namespace LacesDataModel.User
         public int UserFollowId { get; set; }
         public int FollowingUserId { get; set; }
         public int FollowedUserId { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         public UserFollow() { }
 
@@ -28,6 +29,7 @@ namespace LacesDataModel.User
                 UserFollowId = temp.UserFollowId;
                 FollowingUserId = temp.FollowingUserId;
                 FollowedUserId = temp.FollowedUserId;
+                CreatedDate = temp.CreatedDate;
             }
             else
             {

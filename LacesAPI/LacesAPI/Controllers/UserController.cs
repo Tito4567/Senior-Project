@@ -45,6 +45,7 @@ namespace LacesAPI.Controllers
          *  12. Add aggregate functions to repository class.
          *  13. For more secure transactions, the Transaction table should have a status field, and should be written to both before and after a sale.
          *  14. Connection string should probably be a config setting.
+         *  15. Add tag logic to searching.
          */
 
         [HttpPost]
@@ -135,6 +136,7 @@ namespace LacesAPI.Controllers
                     LacesDataModel.User.User userResult = new LacesDataModel.User.User(request.UserIdToGet);
 
                     response.User = new LacesViewModel.Response.User();
+                    
                     response.User.CreatedDate = userResult.CreatedDate;
                     response.User.Description = userResult.Description;
 
@@ -397,6 +399,7 @@ namespace LacesAPI.Controllers
 
                     follow.FollowedUserId = followedUser.UserId;
                     follow.FollowingUserId = followingUser.UserId;
+                    follow.CreatedDate = DateTime.Now;
                     
                     if (follow.Add())
                     {
@@ -453,7 +456,7 @@ namespace LacesAPI.Controllers
                     UserFollow follow = new UserFollow();
                     follow.LoadByUserids(followingUser.UserId, followedUser.UserId);
 
-                    if (follow.UserFollowId > 0 && follow.Add())
+                    if (follow.UserFollowId > 0 && follow.Delete())
                     {
                         followedUser.FollowingUsers--;
                         followedUser.Update();
@@ -685,6 +688,8 @@ namespace LacesAPI.Controllers
                         userInterest.UserId = user.UserId;
                         userInterest.ProductId = product.ProductId;
                         userInterest.Interested = true;
+                        userInterest.CreatedDate = DateTime.Now;
+                        userInterest.UpdatedDate = DateTime.Now;
 
                         if (userInterest.Add())
                         {
@@ -700,6 +705,7 @@ namespace LacesAPI.Controllers
                     else if (userInterest.Interested == false)
                     {
                         userInterest.Interested = true;
+                        userInterest.UpdatedDate = DateTime.Now;
 
                         if (userInterest.Update())
                         {

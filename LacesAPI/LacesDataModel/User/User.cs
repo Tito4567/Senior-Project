@@ -20,6 +20,7 @@ namespace LacesDataModel.User
         public int FollowingUsers { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
+        public DateTime LastAlertCheck { get; set; }
 
         public User() { }
 
@@ -41,6 +42,7 @@ namespace LacesDataModel.User
                 FollowingUsers = temp.FollowingUsers;
                 CreatedDate = temp.CreatedDate;
                 UpdatedDate = temp.UpdatedDate;
+                LastAlertCheck = temp.LastAlertCheck;
             }
             else
             {

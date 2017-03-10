@@ -9,6 +9,7 @@
 	, [UsersFollowing]	[int]			NOT NULL
 	, [CreatedDate]		[datetime]		NOT NULL
 	, [UpdatedDate]		[datetime]		NOT NULL
+	, [LastAlertCheck]	[datetime]
   CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED
 (
 	[UserId] ASC
@@ -38,6 +39,7 @@ BEGIN
 		, [UsersFollowing]
 		, [CreatedDate]
 		, [UpdatedDate]
+		, [LastAlertCheck]
 	)
 	VALUES
 	(
@@ -48,6 +50,7 @@ BEGIN
 		, @email
 		, 0
 		, 0
+		, GETDATE()
 		, GETDATE()
 		, GETDATE()
 	)

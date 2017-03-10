@@ -5,10 +5,10 @@ namespace LacesDataModel.Product
 {
     public enum ProductStatusOptions
     {
-        Unknown = 0,
-        Open = 1,
-        Sold = 2,
-        Removed = 3
+        Unknown = 1,
+        Open = 2,
+        Sold = 3,
+        Removed = 4
     }
 
     [ConnectionString(Constants.CONNECTION_STRING)]

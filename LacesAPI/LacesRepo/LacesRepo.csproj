@@ -60,6 +60,7 @@
     <Content Include="SQL Scripts\DatabaseSetup.sql" />
     <Content Include="SQL Scripts\Stored Procedures %28Delete ASAP%29\pr_getFollowingFeed.sql" />
     <Content Include="SQL Scripts\Stored Procedures %28Delete ASAP%29\pr_getInterestFeed.sql" />
+    <Content Include="SQL Scripts\Stored Procedures %28Delete ASAP%29\pr_getNotifications.sql" />
     <Content Include="SQL Scripts\Table Creation\Comments.sql" />
     <Content Include="SQL Scripts\Table Creation\Conditions.sql" />
     <Content Include="SQL Scripts\Table Creation\ImageEntityTypes.sql" />

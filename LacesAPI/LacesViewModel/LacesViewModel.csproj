@@ -45,6 +45,7 @@
     <Compile Include="Request\AddProductRequest.cs" />
     <Compile Include="Request\AddTagRequest.cs" />
     <Compile Include="Request\ProcessTransactionRequest.cs" />
+    <Compile Include="Request\SearchRequest.cs" />
     <Compile Include="Request\UpdateInterestQueueRequest.cs" />
     <Compile Include="Request\AddUserRequest.cs" />
     <Compile Include="Request\FollowUserRequest.cs" />
@@ -65,14 +66,17 @@
     <Compile Include="Request\UpdateUserInfoRequest.cs" />
     <Compile Include="Response\AddProductResponse.cs" />
     <Compile Include="Response\AddUserResponse.cs" />
+    <Compile Include="Response\ConfigurationManager.cs" />
     <Compile Include="Response\GetCommentResponse.cs" />
     <Compile Include="Response\GetFollowingFeedResponse.cs" />
     <Compile Include="Response\GetDetailedProductResponse.cs" />
     <Compile Include="Response\GetInterestFeedResponse.cs" />
+    <Compile Include="Response\GetNotificationsResponse.cs" />
     <Compile Include="Response\GetShortProductResponse.cs" />
     <Compile Include="Response\GetUserResponse.cs" />
     <Compile Include="Response\LacesResponse.cs" />
     <Compile Include="Response\LoginUserResponse.cs" />
+    <Compile Include="Response\SearchResponse.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
