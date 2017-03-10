@@ -2,6 +2,6 @@
 {
     public class GetUserRequest : LacesRequest
     {
-        public int UserId;
+        public int UserIdToGet { get; set; }
     }
 }

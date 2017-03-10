@@ -1,7 +1,8 @@
 ﻿CREATE TABLE [dbo].[UserLikes] (
-	[UserLikeId]	[int]	IDENTITY(1,1)	NOT FOR REPLICATION	NOT NULL
-	, [UserId]		[int]	NOT NULL
-	, [ProductId]	[int]	NOT NULL
+	[UserLikeId]	[int]		IDENTITY(1,1)	NOT FOR REPLICATION	NOT NULL
+	, [UserId]		[int]		NOT NULL
+	, [ProductId]	[int]		NOT NULL
+	, [CreatedDate]	[datetime]	NOT NULL
   CONSTRAINT [PK_UserLikes] PRIMARY KEY CLUSTERED
 (
 	[UserLikeId] ASC

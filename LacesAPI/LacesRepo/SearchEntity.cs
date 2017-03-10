@@ -10,5 +10,6 @@ namespace LacesRepo
         public int PageSizeLimit { get; set; }
         public string SchemaName { get; set; }
         public string TableName { get; set; }
+        public OrderBy OrderBy { get; set; }
     }
 }

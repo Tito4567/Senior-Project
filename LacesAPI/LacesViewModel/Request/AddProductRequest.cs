@@ -5,7 +5,6 @@ namespace LacesViewModel.Request
     {
         public string ProductName { get; set; }
         public string Description { get; set; }
-        public int SellerId { get; set; }
         public double AskingPrice { get; set; }
         public int ProductStatudId { get; set; }
         public string Brand { get; set; }
@@ -13,5 +12,6 @@ namespace LacesViewModel.Request
         public int ProductTypeId { get; set; }
         public int ConditionId { get; set; }
         public List<ImageInfo> Images { get; set; }
+        public List<string> Tags { get; set; }
     }
 }

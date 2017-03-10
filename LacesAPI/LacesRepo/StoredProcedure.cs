@@ -68,5 +68,35 @@ namespace LacesRepo
 
             return result;
         }
+
+        public DataSet ExecuteDataSet()
+        {
+
+            DataSet result = new DataSet();
+
+            conn.Open();
+
+            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+
+            try
+            {
+                adapter.Fill(result);
+            }
+            catch
+            {
+                result = new DataSet();
+            }
+            finally
+            {
+                if (conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+
+                conn.Dispose();
+            }
+
+            return result;
+        }
     }
 }

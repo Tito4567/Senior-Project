@@ -40,6 +40,11 @@ namespace LacesAPI.Controllers
          *  7. Some of the request types should probably be consolidated, as several contain the same or similar data.
          *  8. General refactoring
          *  9. Add error codes to make it easier for the app to process failure responses.
+         *  10. Add "in" to LacesRepo.Condition operator types
+         *  11. Replace stored procedures with code implementations ASAP (remove reference to LacesRepo).
+         *  12. Add aggregate functions to repository class.
+         *  13. For more secure transactions, the Transaction table should have a status field, and should be written to both before and after a sale.
+         *  14. Connection string should probably be a config setting.
          */
 
         [HttpPost]
@@ -127,31 +132,30 @@ namespace LacesAPI.Controllers
             {
                 if (request.SecurityString == ConfigurationManager.AppSettings[Constants.APP_SETTING_SECURITY_TOKEN])
                 {
-                    LacesDataModel.User.User user = new LacesDataModel.User.User(request.UserId);
+                    LacesDataModel.User.User userResult = new LacesDataModel.User.User(request.UserIdToGet);
 
                     response.User = new LacesViewModel.Response.User();
-                    response.User.CreatedDate = user.CreatedDate;
-                    response.User.Description = user.Description;
+                    response.User.CreatedDate = userResult.CreatedDate;
+                    response.User.Description = userResult.Description;
 
-                    if (string.IsNullOrEmpty(user.DisplayName) == false)
+                    if (string.IsNullOrEmpty(userResult.DisplayName) == false)
                     {
-                        response.User.DisplayName = user.DisplayName;
+                        response.User.DisplayName = userResult.DisplayName;
                     }
                     else
                     {
-                        response.User.DisplayName = user.UserName;
+                        response.User.DisplayName = userResult.UserName;
                     }
 
-                    response.User.Email = user.Email;
-                    response.User.UserName = user.UserName;
-                    response.User.FollowedUsers = user.FollowedUsers;
-                    response.User.FollowingUsers = user.FollowingUsers;
-                    response.User.UserId = user.UserId;
+                    response.User.Email = userResult.Email;
+                    response.User.UserName = userResult.UserName;
+                    response.User.FollowedUsers = userResult.FollowedUsers;
+                    response.User.FollowingUsers = userResult.FollowingUsers;
                     response.User.ProfilePicture = new LacesViewModel.Response.ImageInfo();
 
                     Image profPic = new Image();
 
-                    if (profPic.LoadAvatarByUserId(user.UserId))
+                    if (profPic.LoadAvatarByUserId(userResult.UserId))
                     {
                         response.User.ProfilePicture.DateLastChanged = profPic.UpdatedDate;
                         response.User.ProfilePicture.fileFormat = profPic.FileFormat;
@@ -160,22 +164,46 @@ namespace LacesAPI.Controllers
                     }
                     else
                     {
-                        response.User.ProfilePicture.DateLastChanged = user.CreatedDate;
+                        response.User.ProfilePicture.DateLastChanged = userResult.CreatedDate;
                         response.User.ProfilePicture.fileFormat = ConfigurationManager.AppSettings[Constants.APP_SETTING_DEFAULT_PROFILE_PIC_FORMAT];
                         response.User.ProfilePicture.fileName = ConfigurationManager.AppSettings[Constants.APP_SETTING_DEFAULT_PROFILE_PIC_NAME];
                         response.User.ProfilePicture.fileData = File.ReadAllBytes(ConfigurationManager.AppSettings[Constants.APP_SETTING_DEFAULT_PROFILE_PIC_PATH]);
                     }
 					
 					response.User.Products = new List<int>();
-					
-					List<Product> products = Product.GetProductsForUser(user.UserId);
-					
-					foreach (Product prod in products)
+
+                    List<LacesDataModel.Product.Product> products = LacesDataModel.Product.Product.GetProductsForUser(userResult.UserId);
+
+                    foreach (LacesDataModel.Product.Product prod in products)
 					{
 						response.User.Products.Add(prod.ProductId);
 					}
 					
 					response.User.ProductCount = response.User.Products.Count();
+
+                    UserFollow isBeingFollowed = new UserFollow();
+                    isBeingFollowed.LoadByUserids(request.UserId, userResult.UserId);
+
+                    if (isBeingFollowed.UserFollowId > 0)
+                    {
+                        response.IsBeingFollowed = true;
+                    }
+                    else
+                    {
+                        response.IsBeingFollowed = false;
+                    }
+
+                    UserFollow isFollowing = new UserFollow();
+                    isFollowing.LoadByUserids(userResult.UserId, request.UserId);
+
+                    if (isFollowing.UserFollowId > 0)
+                    {
+                        response.IsFollowing = true;
+                    }
+                    else
+                    {
+                        response.IsFollowing = false;
+                    }
 
                     response.Success = true;
                 }
@@ -363,12 +391,12 @@ namespace LacesAPI.Controllers
                 if (request.SecurityString == ConfigurationManager.AppSettings[Constants.APP_SETTING_SECURITY_TOKEN])
                 {
                     LacesDataModel.User.User followedUser = new LacesDataModel.User.User(request.FollowedUserId);
-                    LacesDataModel.User.User followingUser = new LacesDataModel.User.User(request.FollowingUserId);
+                    LacesDataModel.User.User followingUser = new LacesDataModel.User.User(request.UserId);
 
                     UserFollow follow = new UserFollow();
 
-                    follow.FollowedUserId = request.FollowedUserId;
-                    follow.FollowingUserId = request.FollowingUserId;
+                    follow.FollowedUserId = followedUser.UserId;
+                    follow.FollowingUserId = followingUser.UserId;
                     
                     if (follow.Add())
                     {
@@ -385,6 +413,61 @@ namespace LacesAPI.Controllers
                     {
                         response.Success = false;
                         response.Message = "Failed to add user follow.";
+                    }
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Invalid security token.";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+
+                if (ex.Message.Contains("find user"))
+                {
+                    response.Message = ex.Message;
+                }
+                else
+                {
+                    response.Message = "An unexpected error has occurred; please verify the format of your request.";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        public LacesResponse UnfollowUser(RemoveFollowRequest request)
+        {
+            LacesResponse response = new LacesResponse();
+
+            try
+            {
+                if (request.SecurityString == ConfigurationManager.AppSettings[Constants.APP_SETTING_SECURITY_TOKEN])
+                {
+                    LacesDataModel.User.User followedUser = new LacesDataModel.User.User(request.FollowedUserId);
+                    LacesDataModel.User.User followingUser = new LacesDataModel.User.User(request.UserId);
+
+                    UserFollow follow = new UserFollow();
+                    follow.LoadByUserids(followingUser.UserId, followedUser.UserId);
+
+                    if (follow.UserFollowId > 0 && follow.Add())
+                    {
+                        followedUser.FollowingUsers--;
+                        followedUser.Update();
+
+                        followingUser.FollowedUsers--;
+                        followingUser.Update();
+
+                        response.Success = true;
+                        response.Message = "Operation completed successfully";
+                    }
+                    else
+                    {
+                        response.Success = false;
+                        response.Message = "An error occurred when communicating with the database.";
                     }
                 }
                 else
@@ -493,11 +576,12 @@ namespace LacesAPI.Controllers
                 {
                     // Confirm user and product exist
                     LacesDataModel.User.User user = new LacesDataModel.User.User(request.UserId);
-                    Product product = new Product(request.ProductId);
+                    LacesDataModel.Product.Product product = new LacesDataModel.Product.Product(request.ProductId);
 
                     UserLike like = new UserLike();
                     like.UserId = user.UserId;
                     like.ProductId = product.ProductId;
+                    like.CreatedDate = DateTime.Now;
 
                     if (like.Add())
                     {
@@ -567,6 +651,164 @@ namespace LacesAPI.Controllers
                 response.Success = false;
 
                 if (ex.Message.Contains("find like"))
+                {
+                    response.Message = ex.Message;
+                }
+                else
+                {
+                    response.Message = "An unexpected error has occurred; please verify the format of your request.";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        public LacesResponse AddToInterestQueue(UpdateInterestQueueRequest request)
+        {
+            LacesResponse response = new LacesResponse();
+
+            try
+            {
+                if (request.SecurityString == ConfigurationManager.AppSettings[Constants.APP_SETTING_SECURITY_TOKEN])
+                {
+                    // Confirm user and product exist
+                    LacesDataModel.User.User user = new LacesDataModel.User.User(request.UserId);
+                    LacesDataModel.Product.Product product = new LacesDataModel.Product.Product(request.ProductId);
+
+                    UserInterestQueue userInterest = new UserInterestQueue();
+
+                    userInterest.LoadByUserAndProductIds(user.UserId, product.ProductId);
+
+                    if (userInterest.UserInterestQueueId == 0)
+                    {
+                        userInterest.UserId = user.UserId;
+                        userInterest.ProductId = product.ProductId;
+                        userInterest.Interested = true;
+
+                        if (userInterest.Add())
+                        {
+                            response.Success = true;
+                            response.Message = "Operation completed.";
+                        }
+                        else
+                        {
+                            response.Success = false;
+                            response.Message = "An error occurred when communicating with the database.";
+                        }
+                    }
+                    else if (userInterest.Interested == false)
+                    {
+                        userInterest.Interested = true;
+
+                        if (userInterest.Update())
+                        {
+                            response.Success = true;
+                            response.Message = "Operation completed.";
+                        }
+                        else
+                        {
+                            response.Success = false;
+                            response.Message = "An error occurred when communicating with the database.";
+                        }
+                    }
+                    else
+                    {
+                        response.Success = true;
+                        response.Message = "Operation completed.";
+                    }
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Invalid security token.";
+                }
+            }
+            catch (Exception ex)
+            {
+                response = new LacesResponse();
+                response.Success = false;
+
+                if (ex.Message.Contains("find user") || ex.Message.Contains("find product") || ex.Message.Contains("find like"))
+                {
+                    response.Message = ex.Message;
+                }
+                else
+                {
+                    response.Message = "An unexpected error has occurred; please verify the format of your request.";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        public LacesResponse RemoveFromInterestQueue(UpdateInterestQueueRequest request)
+        {
+            LacesResponse response = new LacesResponse();
+
+            try
+            {
+                if (request.SecurityString == ConfigurationManager.AppSettings[Constants.APP_SETTING_SECURITY_TOKEN])
+                {
+                    // Confirm user and product exist
+                    LacesDataModel.User.User user = new LacesDataModel.User.User(request.UserId);
+                    LacesDataModel.Product.Product product = new LacesDataModel.Product.Product(request.ProductId);
+
+                    UserInterestQueue userInterest = new UserInterestQueue();
+
+                    userInterest.LoadByUserAndProductIds(user.UserId, product.ProductId);
+
+                    if (userInterest.UserInterestQueueId == 0)
+                    {
+                        userInterest.UserId = user.UserId;
+                        userInterest.ProductId = product.ProductId;
+                        userInterest.Interested = false;
+
+                        if (userInterest.Add())
+                        {
+                            response.Success = true;
+                            response.Message = "Operation completed.";
+                        }
+                        else
+                        {
+                            response.Success = false;
+                            response.Message = "An error occurred when communicating with the database.";
+                        }
+                    }
+                    else if (userInterest.Interested == true)
+                    {
+                        userInterest.Interested = false;
+
+                        if (userInterest.Update())
+                        {
+                            response.Success = true;
+                            response.Message = "Operation completed.";
+                        }
+                        else
+                        {
+                            response.Success = false;
+                            response.Message = "An error occurred when communicating with the database.";
+                        }
+                    }
+                    else
+                    {
+                        response.Success = true;
+                        response.Message = "Operation completed.";
+                    }
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Invalid security token.";
+                }
+            }
+            catch (Exception ex)
+            {
+                response = new LacesResponse();
+                response.Success = false;
+
+                if (ex.Message.Contains("find user") || ex.Message.Contains("find product") || ex.Message.Contains("find like"))
                 {
                     response.Message = ex.Message;
                 }

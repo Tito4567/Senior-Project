@@ -6,11 +6,12 @@ namespace LacesViewModel.Response
     public class GetUserResponse : LacesResponse
     {
         public User User { get; set; }
+        public bool IsFollowing { get; set; }
+        public bool IsBeingFollowed { get; set; }
     }
 
     public class User
     {
-        public int UserId { get; set; }
         public string UserName { get; set; }
         public string DisplayName { get; set; }
         public string Description { get; set; }

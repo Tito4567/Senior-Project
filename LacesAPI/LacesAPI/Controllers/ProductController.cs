@@ -23,9 +23,9 @@ namespace LacesAPI.Controllers
             {
                 if (request.SecurityString == ConfigurationManager.AppSettings[Constants.APP_SETTING_SECURITY_TOKEN])
                 {
-                    LacesDataModel.User.User user = new LacesDataModel.User.User(request.SellerId); // Ensure user exists.
+                    LacesDataModel.User.User user = new LacesDataModel.User.User(request.UserId); // Ensure user exists.
 
-                    Product product = new Product();
+                    LacesDataModel.Product.Product product = new LacesDataModel.Product.Product();
                     product.AskingPrice = request.AskingPrice;
                     product.Brand = request.Brand;
                     product.ConditionId = request.ConditionId;
@@ -61,6 +61,19 @@ namespace LacesAPI.Controllers
                                 productImage.CreatedDate = DateTime.Now;
                                 productImage.UpdatedDate = DateTime.Now;
                                 productImage.Add();
+                            }
+                        }
+
+                        if (request.Tags != null && request.Tags.Count > 0)
+                        {
+                            foreach (string tag in request.Tags)
+                            {
+                                LacesDataModel.Product.Tag newTag = new LacesDataModel.Product.Tag();
+
+                                newTag.ProductId = product.ProductId;
+                                newTag.Description = tag;
+
+                                newTag.Add();
                             }
                         }
 
@@ -106,7 +119,7 @@ namespace LacesAPI.Controllers
             {
                 if (request.SecurityString == ConfigurationManager.AppSettings[Constants.APP_SETTING_SECURITY_TOKEN])
                 {
-                    Product product = new Product(request.ProductId);
+                    LacesDataModel.Product.Product product = new LacesDataModel.Product.Product(request.ProductId);
 
                     if (product.SellerId == request.UserId)
                     {
@@ -162,57 +175,39 @@ namespace LacesAPI.Controllers
         }
 
         [HttpPost]
-        public GetProductResponse GetProduct(GetProductRequest request)
+        public GetShortProductResponse GetShortProduct(GetProductRequest request)
         {
-            GetProductResponse response = new GetProductResponse();
+            GetShortProductResponse response = new GetShortProductResponse();
 
             try
             {
                 if (request.SecurityString == ConfigurationManager.AppSettings[Constants.APP_SETTING_SECURITY_TOKEN])
                 {
-                    Product product = new Product(request.ProductId);
+                    LacesDataModel.Product.Product product = new LacesDataModel.Product.Product(request.ProductId);
 
                     if (product.ProductStatudId != (int)ProductStatusOptions.Removed)
                     {
                         LacesDataModel.User.User user = new LacesDataModel.User.User(product.SellerId);
 
-                        response.AskingPrice = product.AskingPrice;
-                        response.Brand = product.Brand;
-                        response.Comments = new List<int>();
-
                         List<Comment> comments = Comment.GetCommentsForProduct(product.ProductId);
 
-                        foreach (Comment comment in comments)
-                        {
-                            response.Comments.Add(comment.CommentId);
-                        }
-
-                        response.CommentCount = response.Comments.Count;
-                        response.ConditionId = product.ConditionId;
-                        response.CreatedDate = product.CreatedDate;
-                        response.Description = product.Description;
+                        response.CommentCount = comments.Count;
 
                         List<UserLike> likes = UserLike.GetCommentsForProduct(product.ProductId); // Consider adding aggregate functions to repo classes
 
                         response.LikeCount = likes.Count;
-                        response.Name = product.Name;
-                        response.ProductImages = new List<LacesViewModel.Response.ImageInfo>();
+                        response.ProductImage = new LacesViewModel.Response.ImageInfo();
 
                         List<Image> images = Image.GetImagesForProduct(product.ProductId);
 
-                        foreach (Image image in images)
+                        if (images.Count > 0)
                         {
-                            LacesViewModel.Response.ImageInfo imageInfo = new LacesViewModel.Response.ImageInfo();
-
-                            imageInfo.DateLastChanged = image.UpdatedDate;
-                            imageInfo.fileData = File.ReadAllBytes(image.FilePath);
-                            imageInfo.fileFormat = image.FileFormat;
-                            imageInfo.fileFormat = image.FileName;
-
-                            response.ProductImages.Add(imageInfo);
+                            response.ProductImage.DateLastChanged = images[0].UpdatedDate;
+                            response.ProductImage.fileData = File.ReadAllBytes(images[0].FilePath);
+                            response.ProductImage.fileFormat = images[0].FileFormat;
+                            response.ProductImage.fileFormat = images[0].FileName;
                         }
 
-                        response.Size = product.Size;
                         response.UserName = user.UserName;
 
                         Image userImage = new Image();
@@ -242,7 +237,137 @@ namespace LacesAPI.Controllers
             }
             catch (Exception ex)
             {
-                response = new GetProductResponse();
+                response = new GetShortProductResponse();
+                response.Success = false;
+
+                if (ex.Message.Contains("find user") || ex.Message.Contains("find product"))
+                {
+                    response.Message = ex.Message;
+                }
+                else
+                {
+                    response.Message = "An unexpected error has occurred; please verify the format of your request.";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        public GetDetailedProductResponse GetDetailedProduct(GetProductRequest request)
+        {
+            GetDetailedProductResponse response = new GetDetailedProductResponse();
+
+            try
+            {
+                if (request.SecurityString == ConfigurationManager.AppSettings[Constants.APP_SETTING_SECURITY_TOKEN])
+                {
+                    LacesDataModel.Product.Product product = new LacesDataModel.Product.Product(request.ProductId);
+
+                    if (product.ProductStatudId != (int)ProductStatusOptions.Removed)
+                    {
+                        LacesDataModel.User.User user = new LacesDataModel.User.User(product.SellerId);
+
+                        response.Product.AskingPrice = product.AskingPrice;
+                        response.Product.Brand = product.Brand;
+                        response.Product.Comments = new List<int>();
+
+                        List<Comment> comments = Comment.GetCommentsForProduct(product.ProductId);
+
+                        foreach (Comment comment in comments)
+                        {
+                            response.Product.Comments.Add(comment.CommentId);
+                        }
+
+                        response.Product.CommentCount = response.Product.Comments.Count;
+                        response.Product.ConditionId = product.ConditionId;
+                        response.Product.CreatedDate = product.CreatedDate;
+                        response.Product.Description = product.Description;
+
+                        List<UserLike> likes = UserLike.GetCommentsForProduct(product.ProductId); // Consider adding aggregate functions to repo classes
+
+                        response.Product.LikeCount = likes.Count;
+                        response.Product.Name = product.Name;
+                        response.Product.ProductImages = new List<LacesViewModel.Response.ImageInfo>();
+
+                        List<Image> images = Image.GetImagesForProduct(product.ProductId);
+
+                        foreach (Image image in images)
+                        {
+                            LacesViewModel.Response.ImageInfo imageInfo = new LacesViewModel.Response.ImageInfo();
+
+                            imageInfo.DateLastChanged = image.UpdatedDate;
+                            imageInfo.fileData = File.ReadAllBytes(image.FilePath);
+                            imageInfo.fileFormat = image.FileFormat;
+                            imageInfo.fileFormat = image.FileName;
+
+                            response.Product.ProductImages.Add(imageInfo);
+                        }
+
+                        response.Product.Size = product.Size;
+                        response.UserName = user.UserName;
+
+                        Image userImage = new Image();
+
+                        userImage.LoadAvatarByUserId(user.UserId);
+
+                        response.UserProfilePic = new LacesViewModel.Response.ImageInfo();
+                        response.UserProfilePic.DateLastChanged = userImage.UpdatedDate;
+                        response.UserProfilePic.fileData = File.ReadAllBytes(userImage.FilePath);
+                        response.UserProfilePic.fileFormat = userImage.FileFormat;
+                        response.UserProfilePic.fileName = userImage.FileName;
+                        response.Product.Tags = new List<LacesViewModel.Response.Tag>();
+
+                        List<LacesDataModel.Product.Tag> tags = LacesDataModel.Product.Tag.GetTagsForProduct(product.ProductId);
+
+                        foreach (LacesDataModel.Product.Tag tag in tags)
+                        {
+                            LacesViewModel.Response.Tag respTag = new LacesViewModel.Response.Tag();
+
+                            respTag.TagId = tag.TagId;
+                            respTag.Description = tag.Description;
+
+                            response.Product.Tags.Add(respTag);
+                        }
+
+                        UserInterestQueue interest = new UserInterestQueue();
+
+                        interest.LoadByUserAndProductIds(user.UserId, product.ProductId);
+
+                        if (interest.UserInterestQueueId > 0)
+                        {
+                            if (interest.Interested)
+                            {
+                                response.UserInterestStatus = (int)UserInterestStatusOption.Interested;
+                            }
+                            else
+                            {
+                                response.UserInterestStatus = (int)UserInterestStatusOption.Uninterested;
+                            }
+                        }
+                        else
+                        {
+                            response.UserInterestStatus = (int)UserInterestStatusOption.Unknown;
+                        }
+
+                        response.Success = true;
+                        response.Message = "Product details retrieved succesfully.";
+                    }
+                    else
+                    {
+                        response.Success = false;
+                        response.Message = "That product has been removed and cannot be updated.";
+                    }
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Invalid security token.";
+                }
+            }
+            catch (Exception ex)
+            {
+                response = new GetDetailedProductResponse();
                 response.Success = false;
 
                 if (ex.Message.Contains("find user") || ex.Message.Contains("find product"))
@@ -267,7 +392,7 @@ namespace LacesAPI.Controllers
             {
                 if (request.SecurityString == ConfigurationManager.AppSettings[Constants.APP_SETTING_SECURITY_TOKEN])
                 {
-                    Product product = new Product(request.ProductId);
+                    LacesDataModel.Product.Product product = new LacesDataModel.Product.Product(request.ProductId);
 
                     product.ProductStatudId = (int)ProductStatusOptions.Removed;
 
@@ -290,10 +415,107 @@ namespace LacesAPI.Controllers
             }
             catch (Exception ex)
             {
-                response = new GetProductResponse();
+                response = new LacesResponse();
                 response.Success = false;
 
                 if (ex.Message.Contains("find product"))
+                {
+                    response.Message = ex.Message;
+                }
+                else
+                {
+                    response.Message = "An unexpected error has occurred; please verify the format of your request.";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        public LacesResponse AddTag(AddTagRequest request)
+        {
+            LacesResponse response = new LacesResponse();
+
+            try
+            {
+                if (request.SecurityString == ConfigurationManager.AppSettings[Constants.APP_SETTING_SECURITY_TOKEN])
+                {
+                    LacesDataModel.Product.Product product = new LacesDataModel.Product.Product(request.ProductId); // Verify product exists
+
+                    LacesDataModel.Product.Tag tag = new LacesDataModel.Product.Tag();
+
+                    tag.ProductId = product.ProductId;
+                    tag.Description = request.Description;
+
+                    if (tag.Add())
+                    {
+                        response.Success = true;
+                        response.Message = "Tag succesfully added.";
+                    }
+                    else
+                    {
+                        response.Success = false;
+                        response.Message = "An error occurred when communicating with the database.";
+                    }
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Invalid security token.";
+                }
+            }
+            catch (Exception ex)
+            {
+                response = new LacesResponse();
+                response.Success = false;
+
+                if (ex.Message.Contains("find product"))
+                {
+                    response.Message = ex.Message;
+                }
+                else
+                {
+                    response.Message = "An unexpected error has occurred; please verify the format of your request.";
+                }
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        public LacesResponse RemoveTag(RemoveTagRequest request)
+        {
+            LacesResponse response = new LacesResponse();
+
+            try
+            {
+                if (request.SecurityString == ConfigurationManager.AppSettings[Constants.APP_SETTING_SECURITY_TOKEN])
+                {
+                    LacesDataModel.Product.Tag tag = new LacesDataModel.Product.Tag(request.TagId);
+
+                    if (tag.Delete())
+                    {
+                        response.Success = true;
+                        response.Message = "Tag succesfully removed.";
+                    }
+                    else
+                    {
+                        response.Success = false;
+                        response.Message = "An error occurred when communicating with the database.";
+                    }
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Invalid security token.";
+                }
+            }
+            catch (Exception ex)
+            {
+                response = new LacesResponse();
+                response.Success = false;
+
+                if (ex.Message.Contains("find tag"))
                 {
                     response.Message = ex.Message;
                 }

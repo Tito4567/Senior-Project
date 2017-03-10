@@ -16,7 +16,10 @@
         internal const string TABLE_PRODUCT_STATUS = "ProductStatus";
         internal const string TABLE_PRODUCT_TYPES = "ProductTypes";
         internal const string TABLE_PRODUCTS = "Products";
+        internal const string TABLE_TAGS = "Tags";
+        internal const string TABLE_TRANSACTIONS = "Transactions";
         internal const string TABLE_USER_FOLLOWS = "UserFollows";
+        internal const string TABLE_USER_INTEREST_QUEUE = "UserInterestQueue";
         internal const string TABLE_USER_LIKES = "UserLikes";
         internal const string TABLE_USERS = "Users";
     }

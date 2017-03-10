@@ -111,7 +111,9 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CommentController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\TransactionController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -142,6 +144,10 @@
     <ProjectReference Include="..\LacesDataModel\LacesDataModel.csproj">
       <Project>{6de9619b-f00c-43bd-b00e-f7f29ec2a3d1}</Project>
       <Name>LacesDataModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LacesRepo\LacesRepo.csproj">
+      <Project>{bfa11cfd-5d31-4ab8-b88d-9b4df1624ac6}</Project>
+      <Name>LacesRepo</Name>
     </ProjectReference>
     <ProjectReference Include="..\LacesViewModel\LacesViewModel.csproj">
       <Project>{c5b7fe73-d3dd-4344-9e58-41aea1468873}</Project>

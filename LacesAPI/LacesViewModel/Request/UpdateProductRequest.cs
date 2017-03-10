@@ -3,7 +3,6 @@
     public class UpdateProductRequest : LacesRequest
     {
         public int ProductId { get; set; }
-        public int UserId { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }
         public double AskingPrice { get; set; }

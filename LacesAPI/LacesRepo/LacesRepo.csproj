@@ -47,6 +47,7 @@
     <Compile Include="CommandBuilder.cs" />
     <Compile Include="Condition.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="OrderBy.cs" />
     <Compile Include="StoredProcedure.cs" />
     <Compile Include="Mappers\EntityMapper.cs" />
     <Compile Include="GenericRepository.cs" />
@@ -57,6 +58,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SQL Scripts\DatabaseSetup.sql" />
+    <Content Include="SQL Scripts\Stored Procedures %28Delete ASAP%29\pr_getFollowingFeed.sql" />
+    <Content Include="SQL Scripts\Stored Procedures %28Delete ASAP%29\pr_getInterestFeed.sql" />
     <Content Include="SQL Scripts\Table Creation\Comments.sql" />
     <Content Include="SQL Scripts\Table Creation\Conditions.sql" />
     <Content Include="SQL Scripts\Table Creation\ImageEntityTypes.sql" />
@@ -64,8 +67,11 @@
     <Content Include="SQL Scripts\Table Creation\Product.sql" />
     <Content Include="SQL Scripts\Table Creation\ProductStatus.sql" />
     <Content Include="SQL Scripts\Table Creation\ProductTypes.sql" />
+    <Content Include="SQL Scripts\Table Creation\Tags.sql" />
+    <Content Include="SQL Scripts\Table Creation\Transactions.sql" />
     <Content Include="SQL Scripts\Table Creation\User.sql" />
     <Content Include="SQL Scripts\Table Creation\UserFollows.sql" />
+    <Content Include="SQL Scripts\Table Creation\UserInterestQueue.sql" />
     <Content Include="SQL Scripts\Table Creation\UserLikes.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

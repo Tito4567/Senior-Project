@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 
@@ -83,6 +84,11 @@ namespace LacesRepo
                 {
                     command.AppendLine("AND " + search.Conditions[i].ToString());
                 }
+            }
+
+            if (search.OrderBy != null)
+            {
+                command.AppendLine("ORDER BY " + search.OrderBy.Column + " " + Enum.GetName(typeof(OrderByDirection), search.OrderBy.Direction));
             }
 
             return command.ToString();

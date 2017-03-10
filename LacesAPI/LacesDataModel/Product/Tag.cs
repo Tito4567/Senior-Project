@@ -2,51 +2,45 @@
 using LacesRepo.Attributes;
 using System;
 using System.Collections.Generic;
-
-namespace LacesDataModel.User
+namespace LacesDataModel.Product
 {
     [ConnectionString(Constants.CONNECTION_STRING)]
-    [TableName(Constants.TABLE_USER_LIKES)]
-    [PrimaryKeyName("UserLikeId")]
+    [TableName(Constants.TABLE_TAGS)]
+    [PrimaryKeyName("TagId")]
     [SchemaName(Constants.SCHEMA_DEFAULT)]
-    public class UserLike : DataObject
+    public class Tag : DataObject
     {
-        public int UserLikeId { get; set; }
-        public int UserId { get; set; }
+        public int TagId { get; set; }
         public int ProductId { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public string Description { get; set; }
 
-        public UserLike() { }
+        public Tag() { }
 
-        public UserLike(int id) : base(id) { }
+        public Tag(int id) : base(id) { }
 
         public override void Load(int id)
         {
-            UserLike temp = GetByValue<UserLike>("UserLikeId", Convert.ToString(id), Constants.TABLE_USER_LIKES, Constants.SCHEMA_DEFAULT);
+            Tag temp = GetByValue<Tag>("TagId", Convert.ToString(id), Constants.TABLE_TAGS, Constants.SCHEMA_DEFAULT);
 
             if (temp != null)
             {
-                UserLikeId = temp.UserLikeId;
-                UserId = temp.UserId;
+                TagId = temp.TagId;
                 ProductId = temp.ProductId;
-                CreatedDate = temp.CreatedDate;
+                Description = temp.Description;
             }
             else
             {
-                throw new Exception("Could not find like with Id " + id);
+                throw new Exception("Could not find tag with Id " + id);
             }
         }
 
         // This might be best moved into a different class later on.
-        public static List<UserLike> GetCommentsForProduct(int productId)
+        public static List<Tag> GetTagsForProduct(int productId)
         {
-            List<UserLike> result = new List<UserLike>();
+            List<Tag> result = new List<Tag>();
 
             SearchEntity search = new SearchEntity();
-
-            search.ColumnsToReturn = new List<string>();
-            search.ColumnsToReturn.Add("UserLikeId");
-
+            
             search.ConnectionString = Constants.CONNECTION_STRING;
             search.Conditions = new List<LacesRepo.Condition>();
 
@@ -58,9 +52,9 @@ namespace LacesDataModel.User
             search.Conditions.Add(userIdCond);
 
             search.SchemaName = Constants.SCHEMA_DEFAULT;
-            search.TableName = Constants.TABLE_IMAGES;
+            search.TableName = Constants.TABLE_TAGS;
 
-            result = new GenericRepository<UserLike>().Read(search);
+            result = new GenericRepository<Tag>().Read(search);
 
             return result;
         }

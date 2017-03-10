@@ -26,7 +26,7 @@ namespace LacesAPI.Controllers
 
                     // Confirm user and product exist
                     LacesDataModel.User.User user = new LacesDataModel.User.User(request.UserId);
-                    Product product = new Product(request.ProductId);
+                    LacesDataModel.Product.Product product = new LacesDataModel.Product.Product(request.ProductId);
 
                     comment.CreatedDate = DateTime.Now;
                     comment.ProductId = product.ProductId;
