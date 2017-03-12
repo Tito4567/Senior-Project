@@ -23,7 +23,7 @@ namespace LacesDataModel
             return new BaseRepository().Create(entity);
         }
 
-        public bool Update()
+        public virtual bool Update()
         {
             Entity entity = new EntityMapper().MapToEntity(this);
 
@@ -48,7 +48,6 @@ namespace LacesDataModel
             SearchEntity search = new SearchEntity();
 
             search.ConnectionString = Constants.CONNECTION_STRING;
-            search.Conditions = new List<Condition>();
 
             Condition searchCond = new Condition();
             searchCond.Column = column;

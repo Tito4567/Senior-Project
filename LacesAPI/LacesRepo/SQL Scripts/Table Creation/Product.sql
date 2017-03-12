@@ -4,7 +4,7 @@
 	, [Description]		[varchar](max)	NOT NULL
 	, [SellerId]		[int]			NOT NULL
 	, [AskingPrice]		[decimal](9,2)
-	, [ProductStatudId]	[int]			NOT NULL
+	, [ProductStatusId]	[int]			NOT NULL
 	, [Brand]			[varchar](30)
 	, [Size]			[varchar](10)
 	, [ProductTypeId]	[int]			NOT NULL

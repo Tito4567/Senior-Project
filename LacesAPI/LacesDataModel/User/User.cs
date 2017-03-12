@@ -16,8 +16,8 @@ namespace LacesDataModel.User
         public string DisplayName { get; set; }
         public string Description { get; set; }
         public string Email { get; set; }
-        public int FollowedUsers { get; set; }
-        public int FollowingUsers { get; set; }
+        public int UsersFollowed { get; set; }
+        public int UsersFollowing { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
         public DateTime LastAlertCheck { get; set; }
@@ -38,8 +38,8 @@ namespace LacesDataModel.User
                 DisplayName = temp.DisplayName;
                 Description = temp.Description;
                 Email = temp.Email;
-                FollowedUsers = temp.FollowedUsers;
-                FollowingUsers = temp.FollowingUsers;
+                UsersFollowed = temp.UsersFollowed;
+                UsersFollowing = temp.UsersFollowing;
                 CreatedDate = temp.CreatedDate;
                 UpdatedDate = temp.UpdatedDate;
                 LastAlertCheck = temp.LastAlertCheck;
@@ -71,6 +71,24 @@ namespace LacesDataModel.User
             {
                 UserId = Convert.ToInt32(idParam.Value);
             }
+
+            return result;
+        }
+
+        public override bool Update()
+        {
+            bool result;
+
+            StoredProcedure proc = new StoredProcedure(Constants.CONNECTION_STRING, Constants.STORED_PROC_UPDATE_USER);
+
+            proc.AddInput("@UserId", UserId, System.Data.SqlDbType.Int);
+            proc.AddInput("@displayName", DisplayName.Trim(), System.Data.SqlDbType.VarChar);
+            proc.AddInput("@description", Description.Trim(), System.Data.SqlDbType.VarChar);
+            proc.AddInput("@usersFollowed", UsersFollowed, System.Data.SqlDbType.Int);
+            proc.AddInput("@usersFollowing", UsersFollowing, System.Data.SqlDbType.Int);
+            proc.AddInput("@lastAlertCheck", LastAlertCheck, System.Data.SqlDbType.DateTime);
+
+            result = proc.Execute();
 
             return result;
         }

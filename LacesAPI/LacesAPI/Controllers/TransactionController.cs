@@ -35,7 +35,7 @@ namespace LacesAPI.Controllers
 
                     if (trans.Add())
                     {
-                        product.ProductStatudId = (int)ProductStatusOptions.Sold;
+                        product.ProductStatusId = (int)ProductStatusOptions.Sold;
 
                         product.Update();
 

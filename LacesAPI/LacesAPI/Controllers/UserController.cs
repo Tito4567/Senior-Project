@@ -46,6 +46,7 @@ namespace LacesAPI.Controllers
          *  13. For more secure transactions, the Transaction table should have a status field, and should be written to both before and after a sale.
          *  14. Connection string should probably be a config setting.
          *  15. Add tag logic to searching.
+         *  16. Add() should return the new record's pkey.
          */
 
         [HttpPost]
@@ -151,8 +152,8 @@ namespace LacesAPI.Controllers
 
                     response.User.Email = userResult.Email;
                     response.User.UserName = userResult.UserName;
-                    response.User.FollowedUsers = userResult.FollowedUsers;
-                    response.User.FollowingUsers = userResult.FollowingUsers;
+                    response.User.FollowedUsers = userResult.UsersFollowed;
+                    response.User.FollowingUsers = userResult.UsersFollowing;
                     response.User.ProfilePicture = new LacesViewModel.Response.ImageInfo();
 
                     Image profPic = new Image();
@@ -183,31 +184,41 @@ namespace LacesAPI.Controllers
 					
 					response.User.ProductCount = response.User.Products.Count();
 
-                    UserFollow isBeingFollowed = new UserFollow();
-                    isBeingFollowed.LoadByUserids(request.UserId, userResult.UserId);
-
-                    if (isBeingFollowed.UserFollowId > 0)
+                    if (userResult.UserId != request.UserId)
                     {
-                        response.IsBeingFollowed = true;
+                        UserFollow isBeingFollowed = new UserFollow();
+                        isBeingFollowed.LoadByUserids(request.UserId, userResult.UserId);
+
+                        if (isBeingFollowed.UserFollowId > 0)
+                        {
+                            response.IsBeingFollowed = true;
+                        }
+                        else
+                        {
+                            response.IsBeingFollowed = false;
+                        }
+
+
+                        UserFollow isFollowing = new UserFollow();
+                        isFollowing.LoadByUserids(userResult.UserId, request.UserId);
+
+                        if (isFollowing.UserFollowId > 0)
+                        {
+                            response.IsFollowing = true;
+                        }
+                        else
+                        {
+                            response.IsFollowing = false;
+                        }
                     }
                     else
                     {
                         response.IsBeingFollowed = false;
-                    }
-
-                    UserFollow isFollowing = new UserFollow();
-                    isFollowing.LoadByUserids(userResult.UserId, request.UserId);
-
-                    if (isFollowing.UserFollowId > 0)
-                    {
-                        response.IsFollowing = true;
-                    }
-                    else
-                    {
                         response.IsFollowing = false;
                     }
 
                     response.Success = true;
+                    response.Message = "User details retrieved succesfully.";
                 }
                 else
                 {
@@ -244,18 +255,37 @@ namespace LacesAPI.Controllers
                 {
                     LacesDataModel.User.User user = new LacesDataModel.User.User(request.UserId);
 
-                    user.Description = request.Description;
-                    user.DisplayName = request.DisplayName;
+                    bool changed = false;
 
-                    if (user.Update())
+                    if (request.Description != null && request.Description != user.Description)
                     {
-                        response.Success = true;
-                        response.Message = "User updated succesfully.";
+                        user.Description = request.Description;
+                        changed = true;
+                    }
+
+                    if (request.DisplayName != null && request.DisplayName != user.DisplayName)
+                    {
+                        user.DisplayName = request.DisplayName;
+                        changed = true;
+                    }
+
+                    if (changed)
+                    {
+                        if (user.Update())
+                        {
+                            response.Success = true;
+                            response.Message = "User updated succesfully.";
+                        }
+                        else
+                        {
+                            response.Success = false;
+                            response.Message = "An error occurred when communicating with the database.";
+                        }
                     }
                     else
                     {
-                        response.Success = false;
-                        response.Message = "An error occurred when communicating with the database.";
+                        response.Success = true;
+                        response.Message = "No changes made.";
                     }
                 }
                 else
@@ -397,25 +427,35 @@ namespace LacesAPI.Controllers
 
                     UserFollow follow = new UserFollow();
 
-                    follow.FollowedUserId = followedUser.UserId;
-                    follow.FollowingUserId = followingUser.UserId;
-                    follow.CreatedDate = DateTime.Now;
-                    
-                    if (follow.Add())
+                    follow.LoadByUserids(followingUser.UserId, followedUser.UserId); // Make sure follow does not already exist.
+
+                    if (follow.UserFollowId == 0)
                     {
-                        followedUser.FollowingUsers++;
-                        followedUser.Update();
+                        follow.FollowedUserId = followedUser.UserId;
+                        follow.FollowingUserId = followingUser.UserId;
+                        follow.CreatedDate = DateTime.Now;
 
-                        followingUser.FollowedUsers++;
-                        followingUser.Update();
+                        if (follow.Add())
+                        {
+                            followedUser.UsersFollowing++;
+                            followedUser.Update();
 
-                        response.Success = true;
-                        response.Message = "Operation completed successfully";
+                            followingUser.UsersFollowed++;
+                            followingUser.Update();
+
+                            response.Success = true;
+                            response.Message = "Operation completed successfully.";
+                        }
+                        else
+                        {
+                            response.Success = false;
+                            response.Message = "Failed to add user follow.";
+                        }
                     }
                     else
                     {
-                        response.Success = false;
-                        response.Message = "Failed to add user follow.";
+                        response.Success = true;
+                        response.Message = "User is already being followed.";
                     }
                 }
                 else
@@ -458,10 +498,10 @@ namespace LacesAPI.Controllers
 
                     if (follow.UserFollowId > 0 && follow.Delete())
                     {
-                        followedUser.FollowingUsers--;
+                        followedUser.UsersFollowing--;
                         followedUser.Update();
 
-                        followingUser.FollowedUsers--;
+                        followingUser.UsersFollowed--;
                         followingUser.Update();
 
                         response.Success = true;

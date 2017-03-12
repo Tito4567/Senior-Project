@@ -11,7 +11,7 @@ BEGIN
 			ON p.ProductId=uiq.ProductId
 	WHERE
 		uiq.UserId=@UserId
-		AND p.ProductStatusId=1
+		AND p.ProductStatusId=2
 		AND uiq.Interested=1
 	ORDER BY
 		p.CreatedDate

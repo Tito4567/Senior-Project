@@ -22,7 +22,6 @@ namespace LacesAPI.Controllers
                     SearchEntity search = new SearchEntity();
 
                     search.ColumnsToReturn = new List<string>();
-                    search.Conditions = new List<Condition>();
                     search.ConnectionString = Constants.CONNECTION_STRING;
                     search.PageSizeLimit = 50;
                     search.SchemaName = Constants.SCHEMA_DEFAULT;
@@ -134,6 +133,14 @@ namespace LacesAPI.Controllers
 
                             search.Conditions.Add(searchCond);
                         }
+
+                        Condition statusCond = new Condition();
+                        statusCond.Column = "ProductStatusId";
+                        statusCond.Operator = Condition.Operators.EqualTo;
+                        statusCond.Invert = true;
+                        statusCond.Value = Convert.ToString((int)LacesDataModel.Product.ProductStatusOptions.Removed);
+
+                        search.Conditions.Add(statusCond);
 
                         List<LacesDataModel.Product.Product> results = new GenericRepository<LacesDataModel.Product.Product>().Read(search);
 

@@ -2,6 +2,7 @@
 using LacesDataModel.Image;
 using LacesDataModel.Product;
 using LacesDataModel.User;
+using LacesRepo;
 using LacesViewModel.Request;
 using LacesViewModel.Response;
 using System;
@@ -32,7 +33,7 @@ namespace LacesAPI.Controllers
                     product.CreatedDate = DateTime.Now;
                     product.Description = request.Description;
                     product.Name = request.ProductName;
-                    product.ProductStatudId = request.ProductStatudId;
+                    product.ProductStatusId = (int)ProductStatusOptions.Open;
                     product.ProductTypeId = request.ProductTypeId;
                     product.SellerId = user.UserId;
                     product.Size = request.Size;
@@ -43,6 +44,35 @@ namespace LacesAPI.Controllers
                         if (request.Images != null && request.Images.Count > 0)
                         {
                             int count = 0;
+
+                            /* This is needed until we can get the Id back from Add(). Remove ASAP */
+
+                            List<LacesDataModel.Product.Product> queryResult = new List<LacesDataModel.Product.Product>();
+
+                            SearchEntity search = new SearchEntity();
+
+                            search.ColumnsToReturn = new List<string>();
+                            search.ColumnsToReturn.Add("ProductId");
+
+                            search.ConnectionString = Constants.CONNECTION_STRING;
+
+                            search.OrderBy = new OrderBy();
+                            search.OrderBy.Column = "ProductId";
+                            search.OrderBy.Direction = OrderByDirection.DESC;
+
+                            search.PageSizeLimit = 1;
+
+                            search.SchemaName = Constants.SCHEMA_DEFAULT;
+                            search.TableName = Constants.TABLE_PRODUCTS;
+
+                            queryResult = new GenericRepository<LacesDataModel.Product.Product>().Read(search);
+
+                            if (queryResult.Count > 0)
+                            {
+                                product.ProductId = queryResult[0].ProductId;
+                            }
+
+                            /* End remove section */    
 
                             foreach (LacesViewModel.Request.ImageInfo image in request.Images)
                             {
@@ -78,7 +108,7 @@ namespace LacesAPI.Controllers
                         }
 
                         response.Success = true;
-                        response.Message = "Product created with Id " + product.ProductId;
+                        response.Message = "Product succesfully created.";
                     }
                     else
                     {
@@ -123,25 +153,75 @@ namespace LacesAPI.Controllers
 
                     if (product.SellerId == request.UserId)
                     {
-                        product.AskingPrice = request.AskingPrice;
-                        product.Brand = request.Brand;
-                        product.ConditionId = request.ConditionId;
-                        product.Description = request.Description;
-                        product.Name = request.ProductName;
-                        product.ProductStatudId = request.ProductStatudId;
-                        product.ProductTypeId = request.ProductTypeId;
-                        product.Size = request.Size;
-                        product.UpdatedDate = DateTime.Now;
+                        bool changed = false;
 
-                        if (product.Update())
+                        if (request.AskingPrice > 0)
                         {
-                            response.Success = true;
-                            response.Message = "Product successfully updated.";
+                            product.AskingPrice = request.AskingPrice;
+                            changed = true;
+                        }
+
+                        if (request.Brand != null)
+                        {
+                            product.Brand = request.Brand;
+                            changed = true;
+                        }
+
+                        if (request.ConditionId > 0)
+                        {
+                            product.ConditionId = request.ConditionId;
+                            changed = true;
+                        }
+
+                        if (request.Description != null)
+                        {
+                            product.Description = request.Description;
+                            changed = true;
+                        }
+
+                        if (request.ProductName != null)
+                        {
+                            product.Name = request.ProductName;
+                            changed = true;
+                        }
+
+                        if (request.ProductStatusId > 0)
+                        {
+                            product.ProductStatusId = request.ProductStatusId;
+                            changed = true;
+                        }
+
+                        if (request.ProductTypeId > 0)
+                        {
+                            product.ProductTypeId = request.ProductTypeId;
+                            changed = true;
+                        }
+
+                        if (request.Size != null)
+                        {
+                            product.Size = request.Size;
+                            changed = true;
+                        }
+
+                        if (changed)
+                        {
+                            product.UpdatedDate = DateTime.Now;
+
+                            if (product.Update())
+                            {
+                                response.Success = true;
+                                response.Message = "Product successfully updated.";
+                            }
+                            else
+                            {
+                                response.Success = false;
+                                response.Message = "An error occurred when communicating with the database.";
+                            }
                         }
                         else
                         {
-                            response.Success = false;
-                            response.Message = "An error occurred when communicating with the database.";
+                            response.Success = true;
+                            response.Message = "No changes were made.";
                         }
                     }
                     else
@@ -185,7 +265,7 @@ namespace LacesAPI.Controllers
                 {
                     LacesDataModel.Product.Product product = new LacesDataModel.Product.Product(request.ProductId);
 
-                    if (product.ProductStatudId != (int)ProductStatusOptions.Removed)
+                    if (product.ProductStatusId != (int)ProductStatusOptions.Removed)
                     {
                         LacesDataModel.User.User user = new LacesDataModel.User.User(product.SellerId);
 
@@ -193,7 +273,7 @@ namespace LacesAPI.Controllers
 
                         response.CommentCount = comments.Count;
 
-                        List<UserLike> likes = UserLike.GetCommentsForProduct(product.ProductId); // Consider adding aggregate functions to repo classes
+                        List<UserLike> likes = UserLike.GetLikesForProduct(product.ProductId); // Consider adding aggregate functions to repo classes
 
                         response.LikeCount = likes.Count;
                         response.ProductImage = new LacesViewModel.Response.ImageInfo();
@@ -264,9 +344,11 @@ namespace LacesAPI.Controllers
                 {
                     LacesDataModel.Product.Product product = new LacesDataModel.Product.Product(request.ProductId);
 
-                    if (product.ProductStatudId != (int)ProductStatusOptions.Removed)
+                    if (product.ProductStatusId != (int)ProductStatusOptions.Removed)
                     {
                         LacesDataModel.User.User user = new LacesDataModel.User.User(product.SellerId);
+
+                        response.Product = new LacesViewModel.Response.Product();
 
                         response.Product.AskingPrice = product.AskingPrice;
                         response.Product.Brand = product.Brand;
@@ -284,7 +366,7 @@ namespace LacesAPI.Controllers
                         response.Product.CreatedDate = product.CreatedDate;
                         response.Product.Description = product.Description;
 
-                        List<UserLike> likes = UserLike.GetCommentsForProduct(product.ProductId); // Consider adding aggregate functions to repo classes
+                        List<UserLike> likes = UserLike.GetLikesForProduct(product.ProductId); // Consider adding aggregate functions to repo classes
 
                         response.Product.LikeCount = likes.Count;
                         response.Product.Name = product.Name;
@@ -394,7 +476,7 @@ namespace LacesAPI.Controllers
                 {
                     LacesDataModel.Product.Product product = new LacesDataModel.Product.Product(request.ProductId);
 
-                    product.ProductStatudId = (int)ProductStatusOptions.Removed;
+                    product.ProductStatusId = (int)ProductStatusOptions.Removed;
 
                     if (product.Update())
                     {

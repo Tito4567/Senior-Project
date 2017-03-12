@@ -38,7 +38,7 @@ namespace LacesDataModel.User
         }
 
         // This might be best moved into a different class later on.
-        public static List<UserLike> GetCommentsForProduct(int productId)
+        public static List<UserLike> GetLikesForProduct(int productId)
         {
             List<UserLike> result = new List<UserLike>();
 
@@ -48,17 +48,16 @@ namespace LacesDataModel.User
             search.ColumnsToReturn.Add("UserLikeId");
 
             search.ConnectionString = Constants.CONNECTION_STRING;
-            search.Conditions = new List<LacesRepo.Condition>();
 
-            LacesRepo.Condition userIdCond = new LacesRepo.Condition();
-            userIdCond.Column = "ProductId";
-            userIdCond.Operator = LacesRepo.Condition.Operators.EqualTo;
-            userIdCond.Value = Convert.ToString(productId);
+            LacesRepo.Condition searchCond = new LacesRepo.Condition();
+            searchCond.Column = "ProductId";
+            searchCond.Operator = LacesRepo.Condition.Operators.EqualTo;
+            searchCond.Value = Convert.ToString(productId);
 
-            search.Conditions.Add(userIdCond);
+            search.Conditions.Add(searchCond);
 
             search.SchemaName = Constants.SCHEMA_DEFAULT;
-            search.TableName = Constants.TABLE_IMAGES;
+            search.TableName = Constants.TABLE_USER_LIKES;
 
             result = new GenericRepository<UserLike>().Read(search);
 

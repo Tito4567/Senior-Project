@@ -3,6 +3,7 @@ using LacesRepo;
 using LacesViewModel.Request;
 using LacesViewModel.Response;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Web.Http;
@@ -30,8 +31,10 @@ namespace LacesAPI.Controllers
 
                     DataSet resultSet = proc.ExecuteDataSet();
 
-                    if (resultSet.Tables[0] != null && resultSet.Tables[0].Rows != null && resultSet.Tables[0].Rows.Count > 0)
+                    if (resultSet.Tables.Count > 0 && resultSet.Tables[0].Rows != null && resultSet.Tables[0].Rows.Count > 0)
                     {
+                        response.Products = new List<FeedItem>();
+
                         foreach (DataRow row in resultSet.Tables[0].Rows)
                         {
                             FeedItem item = new FeedItem();
@@ -89,12 +92,17 @@ namespace LacesAPI.Controllers
 
                     DataSet resultSet = proc.ExecuteDataSet();
 
-                    if (resultSet.Tables[0] != null && resultSet.Tables[0].Rows != null && resultSet.Tables[0].Rows.Count > 0)
+                    if (resultSet.Tables.Count > 0 && resultSet.Tables[0].Rows != null && resultSet.Tables[0].Rows.Count > 0)
                     {
+                        response.Products = new List<int>();
+
                         foreach (DataRow row in resultSet.Tables[0].Rows)
                         {
                             response.Products.Add(Convert.ToInt32(row["ProductId"]));
                         }
+
+                        response.Success = true;
+                        response.Message = "Operation complete.";
                     }
                     else
                     {

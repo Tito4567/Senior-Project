@@ -42,7 +42,6 @@ namespace LacesDataModel.User
             SearchEntity search = new SearchEntity();
 
             search.ConnectionString = Constants.CONNECTION_STRING;
-            search.Conditions = new List<Condition>();
 
             Condition followerCond = new Condition();
             followerCond.Column = "FollowingUserId";

@@ -7,6 +7,7 @@
 
         internal const string STORED_PROC_ADD_USER = "[dbo].[pr_addUser]";
         internal const string STORED_PROC_CHANGE_PASSWORD = "[dbo].[pr_changePassword]";
+        internal const string STORED_PROC_UPDATE_USER = "[dbo].[pr_updateUser]";
         internal const string STORED_PROC_VALIDATE_LOGIN = "[dbo].[pr_validateLogin]";
 
         internal const string TABLE_COMMENTS = "Comments";

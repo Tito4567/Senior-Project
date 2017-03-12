@@ -15,8 +15,8 @@ namespace LacesDataModel.Product
 	    public string Name { get; set; }
 	    public string Description { get; set; }
 	    public int SellerId { get; set; }
-	    public double AskingPrice { get; set; }
-	    public int ProductStatudId { get; set; }
+	    public decimal AskingPrice { get; set; }
+	    public int ProductStatusId { get; set; }
 	    public string Brand { get; set; }
 	    public string Size { get; set; }
 	    public int ProductTypeId { get; set; }
@@ -39,7 +39,7 @@ namespace LacesDataModel.Product
                 Description = temp.Description;
                 SellerId = temp.SellerId;
                 AskingPrice = temp.AskingPrice;
-                ProductStatudId = temp.ProductStatudId;
+                ProductStatusId = temp.ProductStatusId;
                 Brand = temp.Brand;
                 Size = temp.Size;
                 ProductTypeId = temp.ProductTypeId;
@@ -64,7 +64,6 @@ namespace LacesDataModel.Product
 			search.ColumnsToReturn.Add("ProductId");
 			
             search.ConnectionString = Constants.CONNECTION_STRING;
-            search.Conditions = new List<LacesRepo.Condition>();
 
             LacesRepo.Condition userIdCond = new LacesRepo.Condition();
             userIdCond.Column = "SellerId";
@@ -81,7 +80,7 @@ namespace LacesDataModel.Product
             search.Conditions.Add(statusCond);
 
             search.SchemaName = Constants.SCHEMA_DEFAULT;
-            search.TableName = Constants.TABLE_IMAGES;
+            search.TableName = Constants.TABLE_PRODUCTS;
 
             result = new GenericRepository<Product>().Read(search);
 

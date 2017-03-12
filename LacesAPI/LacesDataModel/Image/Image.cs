@@ -50,7 +50,6 @@ namespace LacesDataModel.Image
             SearchEntity search = new SearchEntity();
 
             search.ConnectionString = Constants.CONNECTION_STRING;
-            search.Conditions = new List<Condition>();
 
             Condition userIdCond = new Condition();
             userIdCond.Column = "AssociatedEntityId";
@@ -79,6 +78,8 @@ namespace LacesDataModel.Image
                 FilePath = response[0].FilePath;
                 FileName = response[0].FileName;
                 FileFormat = response[0].FileFormat;
+                CreatedDate = response[0].CreatedDate;
+                UpdatedDate = response[0].UpdatedDate;
 
                 result = true;
             }
@@ -93,7 +94,6 @@ namespace LacesDataModel.Image
             SearchEntity search = new SearchEntity();
 
             search.ConnectionString = Constants.CONNECTION_STRING;
-            search.Conditions = new List<LacesRepo.Condition>();
 
             Condition productIdCond = new Condition();
             productIdCond.Column = "AssociatedEntityId";

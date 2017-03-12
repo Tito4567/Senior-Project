@@ -6,6 +6,6 @@
         public int SellerId { get; set; }
         public int ProductId { get; set; }
         public string ReferenceNumber { get; set; }
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
     }
 }

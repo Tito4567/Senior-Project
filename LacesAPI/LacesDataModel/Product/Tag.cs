@@ -42,7 +42,6 @@ namespace LacesDataModel.Product
             SearchEntity search = new SearchEntity();
             
             search.ConnectionString = Constants.CONNECTION_STRING;
-            search.Conditions = new List<LacesRepo.Condition>();
 
             LacesRepo.Condition userIdCond = new LacesRepo.Condition();
             userIdCond.Column = "ProductId";

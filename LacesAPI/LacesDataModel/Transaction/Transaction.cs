@@ -13,7 +13,7 @@ namespace LacesDataModel.Transaction
         public int SellerId { get; set; }
         public int BuyerId { get; set; }
         public int ProductId { get; set; }
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
         public string ReferenceNumber { get; set; }
         public DateTime CreatedDate { get; set; }
 

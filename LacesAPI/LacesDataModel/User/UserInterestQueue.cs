@@ -46,7 +46,6 @@ namespace LacesDataModel.User
             SearchEntity search = new SearchEntity();
 
             search.ConnectionString = Constants.CONNECTION_STRING;
-            search.Conditions = new List<Condition>();
 
             Condition followerCond = new Condition();
             followerCond.Column = "UserId";
@@ -63,7 +62,7 @@ namespace LacesDataModel.User
 
             search.PageSizeLimit = 1;
             search.SchemaName = Constants.SCHEMA_DEFAULT;
-            search.TableName = Constants.TABLE_USER_FOLLOWS;
+            search.TableName = Constants.TABLE_USER_INTEREST_QUEUE;
 
             List<UserInterestQueue> response = new GenericRepository<UserInterestQueue>().Read(search);
 
@@ -73,6 +72,8 @@ namespace LacesDataModel.User
                 UserId = response[0].UserId;
                 ProductId = response[0].ProductId;
                 Interested = response[0].Interested;
+                CreatedDate = response[0].CreatedDate;
+                UpdatedDate = response[0].UpdatedDate;
             }
             else
             {

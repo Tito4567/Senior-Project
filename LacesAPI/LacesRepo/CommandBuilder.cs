@@ -18,22 +18,28 @@ namespace LacesRepo
 
             List<string> columns = entity.GetKeys();
 
-            command.AppendLine(columns[0]);
+            command.AppendLine(columns[1]);
 
-            for (int i = 1; i < columns.Count; i++)
+            if (columns.Count > 2)
             {
-                command.AppendLine(", " + columns[i]);
+                for (int i = 2; i < columns.Count; i++)
+                {
+                    command.AppendLine(", " + columns[i]);
+                }
             }
 
             command.AppendLine(")");
             command.AppendLine("VALUES");
             command.AppendLine("(");
 
-            command.AppendLine("@" + columns[0]);
+            command.AppendLine("@" + columns[1]);
 
-            for (int i = 1; i < columns.Count; i++)
+            if (columns.Count > 2)
             {
-                command.AppendLine(", @" + columns[i]);
+                for (int i = 2; i < columns.Count; i++)
+                {
+                    command.AppendLine(", @" + columns[i]);
+                }
             }
 
             command.AppendLine(")");
@@ -74,7 +80,7 @@ namespace LacesRepo
 
             command.AppendLine("FROM " + search.SchemaName + "." + search.TableName);
 
-            if (search.Conditions != null && search.Conditions.Count > 0)
+            if (search.Conditions.Count > 0)
             {
                 command.AppendLine("WHERE");
 
@@ -119,11 +125,14 @@ namespace LacesRepo
 
             List<string> columns = entity.GetKeys();
 
-            command.AppendLine(columns[0] + " = @" + columns[0]);
+            command.AppendLine(columns[1] + " = @" + columns[1]); // columns[0] should always be the pkey
 
-            for (int i = 1; i < columns.Count; i++)
+            if (columns.Count > 2)
             {
-                command.AppendLine(", " + columns[i] + " = @" + columns[i]);
+                for (int i = 2; i < columns.Count; i++)
+                {
+                    command.AppendLine(", " + columns[i] + " = @" + columns[i]);
+                }
             }
 
             command.AppendLine("WHERE " + entity.PrimaryKeyName + " = @" + entity.PrimaryKeyName);
@@ -140,7 +149,6 @@ namespace LacesRepo
             StringBuilder command = new StringBuilder();
 
             command.AppendLine("DELETE FROM " + entity.SchemaName + "." + entity.TableName);
-            command.AppendLine("SET");
             command.AppendLine("WHERE " + entity.PrimaryKeyName + " = @" + entity.PrimaryKeyName);
 
             return command.ToString();

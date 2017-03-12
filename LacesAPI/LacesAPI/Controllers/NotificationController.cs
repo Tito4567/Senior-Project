@@ -12,6 +12,7 @@ namespace LacesAPI.Controllers
 {
     public class NotificationController : ApiController
     {
+        [HttpPost]
         public GetNotificationsResponse GetNotifications(LacesRequest request)
         {
             GetNotificationsResponse response = new GetNotificationsResponse();
@@ -26,7 +27,7 @@ namespace LacesAPI.Controllers
 
                     DataSet resultSet = proc.ExecuteDataSet();
 
-                    if (resultSet.Tables[0] != null && resultSet.Tables[0].Rows != null && resultSet.Tables[0].Rows.Count > 0)
+                    if (resultSet.Tables.Count > 0 && resultSet.Tables[0].Rows != null && resultSet.Tables[0].Rows.Count > 0)
                     {
                         response.Notifications = new List<Notification>();
 
@@ -34,7 +35,7 @@ namespace LacesAPI.Controllers
                         {
                             Notification alert = new Notification();
 
-                            alert.CreatedDate = Convert.ToDateTime(row["DateTime"]);
+                            alert.CreatedDate = Convert.ToDateTime(row["CreatedDate"]);
                             alert.NotificationType = Convert.ToInt32(row["NotificationTypeId"]);
                             alert.ProductId = Convert.ToInt32(row["ProductId"]);
                             alert.UserName = Convert.ToString(row["UserName"]);
@@ -67,6 +68,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [HttpPost]
         public LacesResponse UpdateAlertCheckTime(LacesRequest request)
         {
             LacesResponse response = new LacesResponse();

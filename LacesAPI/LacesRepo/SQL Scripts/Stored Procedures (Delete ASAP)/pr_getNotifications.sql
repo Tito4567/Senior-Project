@@ -81,3 +81,7 @@ BEGIN
 	) AS alert
 	ORDER BY alert.CreatedDate
 END
+GO
+
+GRANT EXECUTE ON [dbo].[pr_getNotifications] TO LACES_USER
+GO

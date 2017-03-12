@@ -91,7 +91,9 @@ BEGIN
 	IF (@@ROWCOUNT > 0)
 	BEGIN
 		UPDATE Users
-		SET [Password] = HASHBYTES('SHA2_256',@newPassword)
+		SET
+			[Password] = HASHBYTES('SHA2_256',@newPassword)
+			, [UpdatedDate] = GETDATE()
 		WHERE UserId=@userId
 
 		SET @result = 1
@@ -101,7 +103,31 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE [dbo].[pr_updateUser]
+(
+	@userId				INT
+	, @displayName		VARCHAR(40)
+	, @description		VARCHAR(MAX)
+	, @usersFollowed	INT
+	, @usersFollowing	INT
+	, @lastAlertCheck	DATETIME
+)
+AS
+BEGIN
+	UPDATE [dbo].Users
+	SET
+		[DisplayName] = @displayName
+		, [Description] = @description
+		, [UsersFollowed] = @usersFollowed
+		, [UsersFollowing] = @usersFollowing
+		, [UpdatedDate] = GETDATE()
+		, [LastAlertCheck] = @lastAlertCheck
+	WHERE UserId = @userId
+END
+GO
+
 GRANT EXECUTE ON [dbo].[pr_addUser] TO LACES_USER
+GRANT EXECUTE ON [dbo].[pr_updateUser] TO LACES_USER
 GRANT EXECUTE ON [dbo].[pr_validateLogin] TO LACES_USER
 GRANT EXECUTE ON [dbo].[pr_changePassword] TO LACES_USER
 GO

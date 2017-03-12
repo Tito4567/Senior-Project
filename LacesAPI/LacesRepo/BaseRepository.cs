@@ -47,6 +47,7 @@ namespace LacesRepo
 
                 command.CommandText = builder.BuildCommandTextForRead(search);
                 command.Connection = new SqlConnection(search.ConnectionString);
+
                 command.Parameters.AddRange(builder.BuildSqlParametersForRead(search));
 
                 command.Connection.Open();
@@ -86,6 +87,8 @@ namespace LacesRepo
                 command.Connection = new SqlConnection(entity.ConnectionString);
                 command.Parameters.AddRange(builder.BuildSqlParametersForModify(entity));
 
+                command.Connection.Open();
+
                 SqlDataReader reader = command.ExecuteReader();
 
                 command.Connection.Close();
@@ -110,6 +113,8 @@ namespace LacesRepo
                 command.CommandText = builder.BuildCommandTextForDelete(entity);
                 command.Connection = new SqlConnection(entity.ConnectionString);
                 command.Parameters.Add(new SqlParameter(entity.PrimaryKeyName, entity.GetValue(entity.PrimaryKeyName)));
+
+                command.Connection.Open();
 
                 SqlDataReader reader = command.ExecuteReader();
 

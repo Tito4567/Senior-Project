@@ -49,7 +49,7 @@ BEGIN
 			UserFollows uf WITH(NOLOCK)
 			INNER JOIN Users u WITH(NOLOCK)
 				ON uf.FollowedUserId=u.UserId
-			INNER JOIN Comments WITH(NOLOCK)
+			INNER JOIN Comments c WITH(NOLOCK)
 				ON u.UserId=c.UserId
 		WHERE
 			uf.FollowingUserId=@userId

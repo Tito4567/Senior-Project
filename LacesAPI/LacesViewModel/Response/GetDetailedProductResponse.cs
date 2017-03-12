@@ -28,7 +28,7 @@ namespace LacesViewModel.Response
         public string Size { get; set; }
         public int ConditionId { get; set; }
         public DateTime CreatedDate { get; set; }
-        public double AskingPrice { get; set; }
+        public decimal AskingPrice { get; set; }
         public List<int> Comments { get; set; }
         public List<Tag> Tags { get; set; }
     }
