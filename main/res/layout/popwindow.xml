@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@android:color/holo_red_dark">
+
+    <EditText
+        android:id="@+id/editText4"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/from"
+        android:layout_alignStart="@+id/from"
+        android:layout_below="@+id/from"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="From" />
+
+    <CheckBox
+        android:id="@+id/men"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="14dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="67dp"
+        android:text="Men"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <CheckBox
+        android:id="@+id/women"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Women"
+        android:layout_below="@+id/men"
+        android:layout_alignLeft="@+id/men"
+        android:layout_alignStart="@+id/men" />
+
+    <CheckBox
+        android:id="@+id/children"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/women"
+        android:layout_alignStart="@+id/women"
+        android:layout_below="@+id/women"
+        android:text="Children" />
+
+    <CheckBox
+        android:id="@+id/nike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nike"
+        android:layout_above="@+id/women"
+        android:layout_toRightOf="@+id/children"
+        android:layout_toEndOf="@+id/children"
+        android:layout_marginLeft="86dp"
+        android:layout_marginStart="86dp" />
+
+    <CheckBox
+        android:id="@+id/adidas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Adidas"
+        android:layout_below="@+id/nike"
+        android:layout_alignLeft="@+id/nike"
+        android:layout_alignStart="@+id/nike" />
+
+    <CheckBox
+        android:id="@+id/airJordan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Air Jordan"
+        android:layout_below="@+id/adidas"
+        android:layout_alignLeft="@+id/adidas"
+        android:layout_alignStart="@+id/adidas" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sneaker Filter Option"
+        android:layout_above="@+id/nike"
+        android:layout_toRightOf="@+id/men"
+        android:layout_toEndOf="@+id/men" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="62dp"
+        android:text="Define Price Range"
+        android:layout_below="@+id/children"
+        android:layout_toRightOf="@+id/women"
+        android:layout_toEndOf="@+id/women" />
+
+    <CheckBox
+        android:id="@+id/from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/children"
+        android:layout_alignStart="@+id/children"
+        android:layout_below="@+id/textView5"
+        android:layout_marginTop="10dp"
+        android:text="From" />
+
+    <CheckBox
+        android:id="@+id/to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/airJordan"
+        android:layout_alignStart="@+id/airJordan"
+        android:layout_alignTop="@+id/from"
+        android:text="To" />
+
+    <Button
+        android:id="@+id/apply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/to"
+        android:layout_alignStart="@+id/to"
+        android:layout_below="@+id/to"
+        android:layout_marginTop="67dp"
+        android:text="Apply Filters" />
+
+    <EditText
+        android:id="@+id/toText"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/to"
+        android:layout_alignStart="@+id/to"
+        android:layout_below="@+id/to"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="To" />
+
+</RelativeLayout>
