@@ -1,6 +1,6 @@
 ﻿namespace LacesViewModel.Request
 {
-    public class GetProductRequest : LacesRequest
+    public class ProductRequest : LacesRequest
     {
         public int ProductId { get; set; }
     }

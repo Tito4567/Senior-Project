@@ -1,8 +1,7 @@
 ﻿namespace LacesViewModel.Request
 {
-    public class AddTagRequest : LacesRequest
+    public class AddTagRequest : ProductRequest
     {
-        public int ProductId { get; set; }
         public string Description { get; set; }
     }
 }

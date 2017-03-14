@@ -1,8 +1,7 @@
 ﻿namespace LacesViewModel.Request
 {
-    public class UpdateProductRequest : LacesRequest
+    public class UpdateProductRequest : ProductRequest
     {
-        public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }
         public decimal AskingPrice { get; set; }

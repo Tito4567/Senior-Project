@@ -255,7 +255,7 @@ namespace LacesAPI.Controllers
         }
 
         [HttpPost]
-        public GetShortProductResponse GetShortProduct(GetProductRequest request)
+        public GetShortProductResponse GetShortProduct(ProductRequest request)
         {
             GetShortProductResponse response = new GetShortProductResponse();
 
@@ -334,7 +334,7 @@ namespace LacesAPI.Controllers
         }
 
         [HttpPost]
-        public GetDetailedProductResponse GetDetailedProduct(GetProductRequest request)
+        public GetDetailedProductResponse GetDetailedProduct(ProductRequest request)
         {
             GetDetailedProductResponse response = new GetDetailedProductResponse();
 
@@ -466,7 +466,7 @@ namespace LacesAPI.Controllers
         }
 
         [HttpPost]
-        public LacesResponse RemoveProduct(RemoveProductRequest request)
+        public LacesResponse RemoveProduct(ProductRequest request)
         {
             LacesResponse response = new LacesResponse();
 

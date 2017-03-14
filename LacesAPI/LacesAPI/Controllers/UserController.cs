@@ -609,7 +609,7 @@ namespace LacesAPI.Controllers
         }
 
         [HttpPost]
-        public LacesResponse LikeProduct(LikeProductRequest request)
+        public LacesResponse LikeProduct(ProductRequest request)
         {
             LacesResponse response = new LacesResponse();
 
@@ -707,7 +707,7 @@ namespace LacesAPI.Controllers
         }
 
         [HttpPost]
-        public LacesResponse AddToInterestQueue(UpdateInterestQueueRequest request)
+        public LacesResponse AddToInterestQueue(ProductRequest request)
         {
             LacesResponse response = new LacesResponse();
 
@@ -789,7 +789,7 @@ namespace LacesAPI.Controllers
         }
 
         [HttpPost]
-        public LacesResponse RemoveFromInterestQueue(UpdateInterestQueueRequest request)
+        public LacesResponse RemoveFromInterestQueue(ProductRequest request)
         {
             LacesResponse response = new LacesResponse();
 
