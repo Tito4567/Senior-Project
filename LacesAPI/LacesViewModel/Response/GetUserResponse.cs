@@ -26,9 +26,9 @@ namespace LacesViewModel.Response
 
     public class ImageInfo
     {
-        public string fileName { get; set; }
-        public string fileFormat { get; set; }
-        public byte[] fileData { get; set; }
+        public string FileName { get; set; }
+        public string FileFormat { get; set; }
+        public byte[] FileData { get; set; }
         public DateTime DateLastChanged { get; set; }
     }
 }

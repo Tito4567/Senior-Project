@@ -131,9 +131,9 @@ namespace LacesAPI.Controllers
 
                     response.UserImage = new LacesViewModel.Response.ImageInfo();
                     response.UserImage.DateLastChanged = userImage.UpdatedDate;
-                    response.UserImage.fileData = File.ReadAllBytes(userImage.FilePath);
-                    response.UserImage.fileFormat = userImage.FileFormat;
-                    response.UserImage.fileName = userImage.FileName;
+                    response.UserImage.FileData = File.ReadAllBytes(userImage.FilePath);
+                    response.UserImage.FileFormat = userImage.FileFormat;
+                    response.UserImage.FileName = userImage.FileName;
 
                     response.UserName = user.UserName;
 

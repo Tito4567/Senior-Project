@@ -161,16 +161,16 @@ namespace LacesAPI.Controllers
                     if (profPic.LoadAvatarByUserId(userResult.UserId))
                     {
                         response.User.ProfilePicture.DateLastChanged = profPic.UpdatedDate;
-                        response.User.ProfilePicture.fileFormat = profPic.FileFormat;
-                        response.User.ProfilePicture.fileName = profPic.FileName;
-                        response.User.ProfilePicture.fileData = File.ReadAllBytes(profPic.FilePath);
+                        response.User.ProfilePicture.FileFormat = profPic.FileFormat;
+                        response.User.ProfilePicture.FileName = profPic.FileName;
+                        response.User.ProfilePicture.FileData = File.ReadAllBytes(profPic.FilePath);
                     }
                     else
                     {
                         response.User.ProfilePicture.DateLastChanged = userResult.CreatedDate;
-                        response.User.ProfilePicture.fileFormat = ConfigurationManager.AppSettings[Constants.APP_SETTING_DEFAULT_PROFILE_PIC_FORMAT];
-                        response.User.ProfilePicture.fileName = ConfigurationManager.AppSettings[Constants.APP_SETTING_DEFAULT_PROFILE_PIC_NAME];
-                        response.User.ProfilePicture.fileData = File.ReadAllBytes(ConfigurationManager.AppSettings[Constants.APP_SETTING_DEFAULT_PROFILE_PIC_PATH]);
+                        response.User.ProfilePicture.FileFormat = ConfigurationManager.AppSettings[Constants.APP_SETTING_DEFAULT_PROFILE_PIC_FORMAT];
+                        response.User.ProfilePicture.FileName = ConfigurationManager.AppSettings[Constants.APP_SETTING_DEFAULT_PROFILE_PIC_NAME];
+                        response.User.ProfilePicture.FileData = File.ReadAllBytes(ConfigurationManager.AppSettings[Constants.APP_SETTING_DEFAULT_PROFILE_PIC_PATH]);
                     }
 					
 					response.User.Products = new List<int>();

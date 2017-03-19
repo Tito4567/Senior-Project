@@ -283,9 +283,9 @@ namespace LacesAPI.Controllers
                         if (images.Count > 0)
                         {
                             response.ProductImage.DateLastChanged = images[0].UpdatedDate;
-                            response.ProductImage.fileData = File.ReadAllBytes(images[0].FilePath);
-                            response.ProductImage.fileFormat = images[0].FileFormat;
-                            response.ProductImage.fileFormat = images[0].FileName;
+                            response.ProductImage.FileData = File.ReadAllBytes(images[0].FilePath);
+                            response.ProductImage.FileFormat = images[0].FileFormat;
+                            response.ProductImage.FileFormat = images[0].FileName;
                         }
 
                         response.UserName = user.UserName;
@@ -296,9 +296,9 @@ namespace LacesAPI.Controllers
 
                         response.UserProfilePic = new LacesViewModel.Response.ImageInfo();
                         response.UserProfilePic.DateLastChanged = userImage.UpdatedDate;
-                        response.UserProfilePic.fileData = File.ReadAllBytes(userImage.FilePath);
-                        response.UserProfilePic.fileFormat = userImage.FileFormat;
-                        response.UserProfilePic.fileName = userImage.FileName;
+                        response.UserProfilePic.FileData = File.ReadAllBytes(userImage.FilePath);
+                        response.UserProfilePic.FileFormat = userImage.FileFormat;
+                        response.UserProfilePic.FileName = userImage.FileName;
 
                         response.Success = true;
                         response.Message = "Product details retrieved succesfully.";
@@ -379,9 +379,9 @@ namespace LacesAPI.Controllers
                             LacesViewModel.Response.ImageInfo imageInfo = new LacesViewModel.Response.ImageInfo();
 
                             imageInfo.DateLastChanged = image.UpdatedDate;
-                            imageInfo.fileData = File.ReadAllBytes(image.FilePath);
-                            imageInfo.fileFormat = image.FileFormat;
-                            imageInfo.fileFormat = image.FileName;
+                            imageInfo.FileData = File.ReadAllBytes(image.FilePath);
+                            imageInfo.FileFormat = image.FileFormat;
+                            imageInfo.FileFormat = image.FileName;
 
                             response.Product.ProductImages.Add(imageInfo);
                         }
@@ -395,9 +395,9 @@ namespace LacesAPI.Controllers
 
                         response.UserProfilePic = new LacesViewModel.Response.ImageInfo();
                         response.UserProfilePic.DateLastChanged = userImage.UpdatedDate;
-                        response.UserProfilePic.fileData = File.ReadAllBytes(userImage.FilePath);
-                        response.UserProfilePic.fileFormat = userImage.FileFormat;
-                        response.UserProfilePic.fileName = userImage.FileName;
+                        response.UserProfilePic.FileData = File.ReadAllBytes(userImage.FilePath);
+                        response.UserProfilePic.FileFormat = userImage.FileFormat;
+                        response.UserProfilePic.FileName = userImage.FileName;
                         response.Product.Tags = new List<LacesViewModel.Response.Tag>();
 
                         List<LacesDataModel.Product.Tag> tags = LacesDataModel.Product.Tag.GetTagsForProduct(product.ProductId);
