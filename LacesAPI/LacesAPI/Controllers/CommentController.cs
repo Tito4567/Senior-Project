@@ -111,7 +111,7 @@ namespace LacesAPI.Controllers
         }
 
         [HttpPost]
-        public GetCommentResponse GetComment(GetCommentRequest request)
+        public GetCommentResponse GetComment(CommentRequest request)
         {
             GetCommentResponse response = new GetCommentResponse();
 
@@ -165,7 +165,7 @@ namespace LacesAPI.Controllers
         }
 
         [HttpPost]
-        public LacesResponse RemoveComment(RemoveCommentRequest request)
+        public LacesResponse RemoveComment(CommentRequest request)
         {
             LacesResponse response = new LacesResponse();
 

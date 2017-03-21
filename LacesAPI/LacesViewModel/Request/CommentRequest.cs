@@ -1,6 +1,6 @@
 ﻿namespace LacesViewModel.Request
 {
-    public class GetCommentRequest : LacesRequest
+    public class CommentRequest: LacesRequest
     {
         public int CommentId { get; set; }
     }

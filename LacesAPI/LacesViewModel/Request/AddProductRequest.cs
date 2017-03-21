@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 namespace LacesViewModel.Request
 {
     public class AddProductRequest : LacesRequest

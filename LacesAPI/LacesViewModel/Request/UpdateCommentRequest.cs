@@ -1,8 +1,7 @@
 ﻿namespace LacesViewModel.Request
 {
-    public class UpdateCommentRequest : LacesRequest
+    public class UpdateCommentRequest : CommentRequest
     {
-        public int CommentId { get; set; }
         public string Text { get; set; }
     }
 }
