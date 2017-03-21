@@ -49,11 +49,10 @@
     <Compile Include="Request\ProductRequest.cs" />
     <Compile Include="Request\SearchRequest.cs" />
     <Compile Include="Request\AddUserRequest.cs" />
-    <Compile Include="Request\FollowUserRequest.cs" />
+    <Compile Include="Request\UserFollowRequest.cs" />
     <Compile Include="Request\GetUserRequest.cs" />
     <Compile Include="Request\LacesRequest.cs" />
     <Compile Include="Request\LoginUserRequest.cs" />
-    <Compile Include="Request\RemoveFollowRequest.cs" />
     <Compile Include="Request\RemoveLikeRequest.cs" />
     <Compile Include="Request\RemoveTagRequest.cs" />
     <Compile Include="Request\UpdateCommentRequest.cs" />

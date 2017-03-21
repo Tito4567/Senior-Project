@@ -414,7 +414,7 @@ namespace LacesAPI.Controllers
         }
 
         [HttpPost]
-        public LacesResponse FollowUser(FollowUserRequest request)
+        public LacesResponse FollowUser(UserFollowRequest request)
         {
             LacesResponse response = new LacesResponse();
 
@@ -482,7 +482,7 @@ namespace LacesAPI.Controllers
         }
 
         [HttpPost]
-        public LacesResponse UnfollowUser(RemoveFollowRequest request)
+        public LacesResponse UnfollowUser(UserFollowRequest request)
         {
             LacesResponse response = new LacesResponse();
 

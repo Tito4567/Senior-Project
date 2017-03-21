@@ -1,6 +1,6 @@
 ﻿namespace LacesViewModel.Request
 {
-    public class FollowUserRequest : LacesRequest
+    public class UserFollowRequest : LacesRequest
     {
         public int FollowedUserId { get; set; }
     }
