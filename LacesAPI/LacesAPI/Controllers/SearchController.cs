@@ -1,7 +1,7 @@
 ﻿using LacesAPI.Helpers;
+using LacesAPI.Models.Request;
+using LacesAPI.Models.Response;
 using LacesRepo;
-using LacesViewModel.Request;
-using LacesViewModel.Response;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -9,8 +9,11 @@ using System.Web.Http;
 
 namespace LacesAPI.Controllers
 {
+    [Authorize]
     public class SearchController : ApiController
     {
+        [AllowAnonymous]
+        [HttpPost]
         public SearchResponse Search(SearchRequest request)
         {
             SearchResponse response = new SearchResponse();

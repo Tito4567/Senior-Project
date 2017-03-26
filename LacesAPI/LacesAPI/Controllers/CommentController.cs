@@ -1,9 +1,9 @@
 ﻿using LacesAPI.Helpers;
+using LacesAPI.Models.Request;
+using LacesAPI.Models.Response;
 using LacesDataModel.Image;
 using LacesDataModel.Product;
 using LacesDataModel.User;
-using LacesViewModel.Request;
-using LacesViewModel.Response;
 using System;
 using System.Configuration;
 using System.IO;
@@ -11,8 +11,10 @@ using System.Web.Http;
 
 namespace LacesAPI.Controllers
 {
+    [Authorize]
     public class CommentController : ApiController
     {
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse AddComment(AddCommentRequest request)
         {
@@ -61,6 +63,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse UpdateComment(UpdateCommentRequest request)
         {
@@ -110,6 +113,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public GetCommentResponse GetComment(CommentRequest request)
         {
@@ -129,7 +133,7 @@ namespace LacesAPI.Controllers
                     response.Text = comment.Text;
                     response.UpdatedDate = comment.UpdatedDate;
 
-                    response.UserImage = new LacesViewModel.Response.ImageInfo();
+                    response.UserImage = new LacesAPI.Models.Response.ImageInfo();
                     response.UserImage.DateLastChanged = userImage.UpdatedDate;
                     response.UserImage.FileData = File.ReadAllBytes(userImage.FilePath);
                     response.UserImage.FileFormat = userImage.FileFormat;
@@ -164,6 +168,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse RemoveComment(CommentRequest request)
         {

@@ -1,10 +1,10 @@
 ﻿using LacesAPI.Helpers;
+using LacesAPI.Models.Request;
+using LacesAPI.Models.Response;
 using LacesDataModel;
 using LacesDataModel.Image;
 using LacesDataModel.Product;
 using LacesDataModel.User;
-using LacesViewModel.Request;
-using LacesViewModel.Response;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -25,10 +25,11 @@ namespace LacesAPI.Controllers
     ///     Purpose:    Controller to handle web requests for the Laces system. Depending on the number of request types we implement, this class may need to be broken up into multiple
     ///                 controllers based on category of request.
     /// </summary>
+    [Authorize]
     public class UserController : ApiController
     {
         /* TODO:
-         *  1. Using a static string as a security token is not very secure, and is a temporary measure. A better authentication method should be implemented before a Production release.
+         *  1. Replace SecurityString authentication with OAuth.
          *  2. When an error occurs, a generic error response is returned. It would be a good idea to implement a logging service so that errors can be tracked in detail on the server side.
          *  3. Throwing exceptions when something can't be found and setting response message based on custom exception content is lazy and could lead to problems down the line. This should
          *      be changed as soon as we have bandwidth to focus on polish.
@@ -47,8 +48,10 @@ namespace LacesAPI.Controllers
          *  14. Connection string should probably be a config setting.
          *  15. Add tag logic to searching.
          *  16. Add() should return the new record's pkey.
+         *  17. Try to figure out HTTPS
          */
 
+        [AllowAnonymous]
         [HttpPost]
         public AddUserResponse AddUser(AddUserRequest request)
         {
@@ -125,8 +128,9 @@ namespace LacesAPI.Controllers
         }
 
         // If authentication is changed to be based on a request header rather than a security token passed in a request object, this could feasibly be changed to a GET request.
+        [AllowAnonymous]
         [HttpPost]
-        public GetUserResponse GetUser(GetUserRequest request)
+        public GetUserResponse GetUser([FromBody]GetUserRequest request)
         {
             GetUserResponse response = new GetUserResponse();
 
@@ -136,7 +140,7 @@ namespace LacesAPI.Controllers
                 {
                     LacesDataModel.User.User userResult = new LacesDataModel.User.User(request.UserIdToGet);
 
-                    response.User = new LacesViewModel.Response.User();
+                    response.User = new LacesAPI.Models.Response.User();
                     
                     response.User.CreatedDate = userResult.CreatedDate;
                     response.User.Description = userResult.Description;
@@ -154,7 +158,7 @@ namespace LacesAPI.Controllers
                     response.User.UserName = userResult.UserName;
                     response.User.FollowedUsers = userResult.UsersFollowed;
                     response.User.FollowingUsers = userResult.UsersFollowing;
-                    response.User.ProfilePicture = new LacesViewModel.Response.ImageInfo();
+                    response.User.ProfilePicture = new LacesAPI.Models.Response.ImageInfo();
 
                     Image profPic = new Image();
 
@@ -244,6 +248,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse UpdateUserInfo(UpdateUserInfoRequest request)
         {
@@ -312,6 +317,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse ChangeUserPassword(UpdatePasswordRequest request)
         {
@@ -359,6 +365,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LoginUserResponse ValidateLogin(LoginUserRequest request)
         {
@@ -413,6 +420,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse FollowUser(UserFollowRequest request)
         {
@@ -481,6 +489,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse UnfollowUser(UserFollowRequest request)
         {
@@ -536,6 +545,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse UpdateProfileImage(AddImageRequest request)
         {
@@ -608,6 +618,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse LikeProduct(ProductRequest request)
         {
@@ -661,6 +672,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse RemoveLike(RemoveLikeRequest request)
         {
@@ -706,6 +718,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse AddToInterestQueue(ProductRequest request)
         {
@@ -788,6 +801,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse RemoveFromInterestQueue(ProductRequest request)
         {

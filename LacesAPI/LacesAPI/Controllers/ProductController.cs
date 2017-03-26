@@ -1,10 +1,10 @@
 ﻿using LacesAPI.Helpers;
+using LacesAPI.Models.Request;
+using LacesAPI.Models.Response;
 using LacesDataModel.Image;
 using LacesDataModel.Product;
 using LacesDataModel.User;
 using LacesRepo;
-using LacesViewModel.Request;
-using LacesViewModel.Response;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -13,8 +13,10 @@ using System.Web.Http;
 
 namespace LacesAPI.Controllers
 {
+    [Authorize]
     public class ProductController : ApiController
     {
+        [AllowAnonymous]
         [HttpPost]
         public AddProductResponse AddProduct(AddProductRequest request)
         {
@@ -74,7 +76,7 @@ namespace LacesAPI.Controllers
 
                             /* End remove section */    
 
-                            foreach (LacesViewModel.Request.ImageInfo image in request.Images)
+                            foreach (LacesAPI.Models.Request.ImageInfo image in request.Images)
                             {
                                 string fileName = product.ProductId + "_" + count + "." + image.FileFormat;
                                 string filePath = ConfigurationManager.AppSettings[Constants.APP_SETTING_PRODUCT_IMAGE_DIRECTORY] + fileName;
@@ -140,6 +142,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse UpdateProduct(UpdateProductRequest request)
         {
@@ -254,6 +257,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public GetShortProductResponse GetShortProduct(ProductRequest request)
         {
@@ -276,7 +280,7 @@ namespace LacesAPI.Controllers
                         List<UserLike> likes = UserLike.GetLikesForProduct(product.ProductId); // Consider adding aggregate functions to repo classes
 
                         response.LikeCount = likes.Count;
-                        response.ProductImage = new LacesViewModel.Response.ImageInfo();
+                        response.ProductImage = new LacesAPI.Models.Response.ImageInfo();
 
                         List<Image> images = Image.GetImagesForProduct(product.ProductId);
 
@@ -294,7 +298,7 @@ namespace LacesAPI.Controllers
 
                         userImage.LoadAvatarByUserId(user.UserId);
 
-                        response.UserProfilePic = new LacesViewModel.Response.ImageInfo();
+                        response.UserProfilePic = new LacesAPI.Models.Response.ImageInfo();
                         response.UserProfilePic.DateLastChanged = userImage.UpdatedDate;
                         response.UserProfilePic.FileData = File.ReadAllBytes(userImage.FilePath);
                         response.UserProfilePic.FileFormat = userImage.FileFormat;
@@ -333,6 +337,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public GetDetailedProductResponse GetDetailedProduct(ProductRequest request)
         {
@@ -348,7 +353,7 @@ namespace LacesAPI.Controllers
                     {
                         LacesDataModel.User.User user = new LacesDataModel.User.User(product.SellerId);
 
-                        response.Product = new LacesViewModel.Response.Product();
+                        response.Product = new LacesAPI.Models.Response.Product();
 
                         response.Product.AskingPrice = product.AskingPrice;
                         response.Product.Brand = product.Brand;
@@ -370,13 +375,13 @@ namespace LacesAPI.Controllers
 
                         response.Product.LikeCount = likes.Count;
                         response.Product.Name = product.Name;
-                        response.Product.ProductImages = new List<LacesViewModel.Response.ImageInfo>();
+                        response.Product.ProductImages = new List<LacesAPI.Models.Response.ImageInfo>();
 
                         List<Image> images = Image.GetImagesForProduct(product.ProductId);
 
                         foreach (Image image in images)
                         {
-                            LacesViewModel.Response.ImageInfo imageInfo = new LacesViewModel.Response.ImageInfo();
+                            LacesAPI.Models.Response.ImageInfo imageInfo = new LacesAPI.Models.Response.ImageInfo();
 
                             imageInfo.DateLastChanged = image.UpdatedDate;
                             imageInfo.FileData = File.ReadAllBytes(image.FilePath);
@@ -393,18 +398,18 @@ namespace LacesAPI.Controllers
 
                         userImage.LoadAvatarByUserId(user.UserId);
 
-                        response.UserProfilePic = new LacesViewModel.Response.ImageInfo();
+                        response.UserProfilePic = new LacesAPI.Models.Response.ImageInfo();
                         response.UserProfilePic.DateLastChanged = userImage.UpdatedDate;
                         response.UserProfilePic.FileData = File.ReadAllBytes(userImage.FilePath);
                         response.UserProfilePic.FileFormat = userImage.FileFormat;
                         response.UserProfilePic.FileName = userImage.FileName;
-                        response.Product.Tags = new List<LacesViewModel.Response.Tag>();
+                        response.Product.Tags = new List<LacesAPI.Models.Response.Tag>();
 
                         List<LacesDataModel.Product.Tag> tags = LacesDataModel.Product.Tag.GetTagsForProduct(product.ProductId);
 
                         foreach (LacesDataModel.Product.Tag tag in tags)
                         {
-                            LacesViewModel.Response.Tag respTag = new LacesViewModel.Response.Tag();
+                            LacesAPI.Models.Response.Tag respTag = new LacesAPI.Models.Response.Tag();
 
                             respTag.TagId = tag.TagId;
                             respTag.Description = tag.Description;
@@ -465,6 +470,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse RemoveProduct(ProductRequest request)
         {
@@ -513,6 +519,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse AddTag(AddTagRequest request)
         {
@@ -564,6 +571,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse RemoveTag(RemoveTagRequest request)
         {

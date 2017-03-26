@@ -1,16 +1,18 @@
 ﻿using LacesAPI.Helpers;
+using LacesAPI.Models.Request;
+using LacesAPI.Models.Response;
 using LacesDataModel.Product;
 using LacesDataModel.Transaction;
-using LacesViewModel.Request;
-using LacesViewModel.Response;
 using System;
 using System.Configuration;
 using System.Web.Http;
 
 namespace LacesAPI.Controllers
 {
+    [Authorize]
     public class TransactionController : ApiController
     {
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse ProcessTransaction(ProcessTransactionRequest request)
         {

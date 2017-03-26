@@ -1,7 +1,7 @@
 ﻿using LacesAPI.Helpers;
+using LacesAPI.Models.Request;
+using LacesAPI.Models.Response;
 using LacesRepo;
-using LacesViewModel.Request;
-using LacesViewModel.Response;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -10,8 +10,10 @@ using System.Web.Http;
 
 namespace LacesAPI.Controllers
 {
+    [Authorize]
     public class NotificationController : ApiController
     {
+        [AllowAnonymous]
         [HttpPost]
         public GetNotificationsResponse GetNotifications(LacesRequest request)
         {
@@ -68,6 +70,7 @@ namespace LacesAPI.Controllers
             return response;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public LacesResponse UpdateAlertCheckTime(LacesRequest request)
         {
